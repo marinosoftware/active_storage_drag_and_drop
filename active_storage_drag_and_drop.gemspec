@@ -6,12 +6,12 @@ require "active_storage_drag_and_drop/version"
 Gem::Specification.new do |spec|
   spec.name          = "active_storage_drag_and_drop"
   spec.version       = ActiveStorageDragAndDrop::VERSION
-  spec.authors       = ["Ian Grant"]
+  spec.authors       = ["Dave O'Keeffe", "Ian Grant"]
   spec.email         = ["ian.grant@marinosoftware.com"]
 
-  spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Provides js drag and drop file upload functionality for active storage.}
+  spec.description   = %q{Provides js drag and drop file upload functionality for active storage.}
+  spec.homepage      = "https://www.marinosoftware.com"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
