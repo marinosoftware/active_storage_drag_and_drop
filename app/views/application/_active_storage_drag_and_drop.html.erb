@@ -1,0 +1,8 @@
+<label id="active-storage-drag-zone">
+  <%= tag_value %>
+  <div id="active-storage-drag-zone__icon-container"></div>
+  <%= form.file_field method, multiple: true, direct_upload: true, style: 'display:none;', data: { dnd: true, dnd_zone_id: 'active-storage-drag-zone', icon_container_id: 'active-storage-drag-zone__icon-container' } %>
+  <% attachments.each_with_index do |blob,idx| %>
+    <%= form.hidden_field method, value: blob.signed_id, :multiple => true, data: { direct_upload_id: idx, uploaded_file_name: blob.filename } %>
+  <% end %>
+</label>
