@@ -5,4 +5,5 @@
 /doc/
 /pkg/
 /spec/reports/
+/node_modules/
 /tmp/

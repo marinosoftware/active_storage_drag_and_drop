@@ -1,0 +1,24 @@
+{
+  "name": "active_storage_drag_and_drop",
+  "version": "0.1.0",
+  "description": "Attach cloud and local files in Rails applications",
+  "main": "app/assets/javascripts/active_storage_drag_and_drop.js",
+  "repository": "git+https://github.com/rails/activestorage.git",
+  "author": "Dave O'Keeffe",
+  "license": "MIT",
+  "devDependencies": {
+    "activestorage": "5.2.0",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.1",
+    "babel-preset-env": "^1.6.0",
+    "spark-md5": "^3.0.0",
+    "webpack": "^4.12.1",
+    "webpack-command": "^0.2.1"
+  },
+  "files": [
+    "app/assets/javascripts/active_storage_drag_and_drop.js"
+  ],
+  "scripts": {
+    "build": "webpack -p"
+  }
+}
