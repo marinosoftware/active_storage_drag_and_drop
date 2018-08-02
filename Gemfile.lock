@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_storage_drag_and_drop (0.1.0)
+    active_storage_drag_and_drop (0.2.0)
       rails (>= 5.2.0)
 
 GEM
@@ -70,10 +70,10 @@ GEM
     mini_portile2 (2.3.0)
     minitest (5.11.3)
     nio4r (2.3.1)
-    nokogiri (1.8.3)
+    nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
     rack (2.0.5)
-    rack-test (1.0.0)
+    rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.0)
       actioncable (= 5.2.0)
