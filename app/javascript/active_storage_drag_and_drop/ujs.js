@@ -1,5 +1,5 @@
 import { UploadQueueProcessor, uploaders, createUploader } from "./upload_queue_processor"
-import { dispatchEvent } from './helpers'
+import * as helpers from './helpers'
 
 let started = false
 let formSubmitted = false
@@ -55,7 +55,7 @@ function addAttachedFileIcons() {
       fileName: dataset.uploadedFileName,
       iconContainer: iconContainer
     }
-    dispatchEvent(uploadedFile, `dnd-upload:placeholder`, { detail })
+    helpers.dispatchEvent(uploadedFile, `dnd-upload:placeholder`, { detail })
   })
 }
 
@@ -68,43 +68,41 @@ export function start() {
   // input[type=file][data-dnd=true]
   document.addEventListener("change", event => {
     console.log('document:change')
-    const input = event.target;
-    if(input.type == 'file' && input.dataset.dnd == 'true') {
+    if(event.target.type == 'file' && event.target.dataset.dnd == 'true') {
+      const input = event.target;
       console.log("input[type=file][data-dnd=true]:change")
       Array.from(input.files).forEach(file => createUploader(input, file))
       input.value = null
     }
   })
   document.addEventListener("dragover", event => {
-    const target = event.target;
-    if(target.classList.contains('asdndzone')) {
+    console.log('document:dragover');
+    if(helpers.hasClassnameInHeirarchy(event.target, 'asdndzone')) {
       event.preventDefault();
     }
   })
   document.addEventListener("drop", event => {
-    const target = event.target;
-    if(target.classList.contains('asdndzone')) {
+    console.log('document:drop');
+    let asdndz = helpers.getClassnameFromHeirarchy(event.target, 'asdndzone')
+    if(asdndz) {
       event.preventDefault()
       console.log(".asdndzone:drop")
       // get the input associated with this dndz
-      const input = document.getElementById(target.dataset.dndInputId)
+      const input = document.getElementById(asdndz.dataset.dndInputId)
       Array.from(event.dataTransfer.files).forEach(file => createUploader(input, file))
     }
   })
   document.addEventListener("click", event => {
-    const target = event.target;
-    if(target.classList.contains('asdndzone')) {
-      if( target.dataset.dndDelete == 'true' && target.hasAttribute('data-direct-upload-id') ) {
-        event.preventDefault();
-        console.log(".asdndzone [data-dnd-delete=true][data-direct-upload-id]:click")
-        document.querySelectorAll('[data-direct-upload-id="'+target.dataset.directUploadId+'"]').forEach(element => {
-          element.remove()
-        })
-        for(var i=0;i<uploaders.length;i++) {
-          if(uploaders[i].upload.id == target.dataset.directUploadId) {
-            uploaders.splice( i, 1 )
-            break
-          }
+    if( event.target.dataset.dndDelete == 'true' && event.target.hasAttribute('data-direct-upload-id') ) {
+      event.preventDefault();
+      console.log("[data-dnd-delete=true][data-direct-upload-id]:click")
+      document.querySelectorAll('[data-direct-upload-id="'+event.target.dataset.directUploadId+'"]').forEach(element => {
+        element.remove()
+      })
+      for(var i=0;i<uploaders.length;i++) {
+        if(uploaders[i].upload.id == event.target.dataset.directUploadId) {
+          uploaders.splice( i, 1 )
+          break
         }
       }
     }

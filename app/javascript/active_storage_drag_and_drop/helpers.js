@@ -8,6 +8,30 @@ export function dispatchEvent(element, type, eventInit = {}) {
   return event
 }
 
+export function hasClassnameInHeirarchy(element, classname) {
+  if(element && element.classList) {
+    if (element.classList.contains(classname)) {
+      return true
+    } else {
+      return hasClassnameInHeirarchy(element.parentNode, classname)
+    }
+  } else {
+    return false
+  }
+}
+
+export function getClassnameFromHeirarchy(element, classname) {
+  if(element && element.classList) {
+    if (element.classList.contains(classname)) {
+      return element
+    } else {
+      return getClassnameFromHeirarchy(element.parentNode, classname)
+    }
+  } else {
+    return null
+  }
+}
+
 //export function disable(input) {
 //  input.disabled = true
 //}
