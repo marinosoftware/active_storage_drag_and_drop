@@ -1,7 +1,6 @@
 import { dispatchEvent } from './helpers'
 import { DirectUpload } from 'activestorage'
 const eventFamily = 'dnd-upload'
-export const uploaders = []
 
 export class DragAndDropUploadController {
   constructor(input, file) {
@@ -69,10 +68,4 @@ export class DragAndDropUploadController {
     }
   }
 
-}
-
-export function createUploader(input, file) {
-  // your form needs the file_field direct_upload: true, which
-  //  provides data-direct-upload-url
-  uploaders.push( new DragAndDropUploadController(input, file) )
 }

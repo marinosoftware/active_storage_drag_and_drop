@@ -1,6 +1,5 @@
-import { UploadQueueProcessor } from "./upload_queue_processor"
-import { UploaderInput } from "./uploader_input"
-import { uploaders, createUploader } from "./direct_upload_controller"
+import { UploadQueueProcessor, uploaders, createUploader } from "./upload_queue_processor"
+import { dispatchEvent } from './helpers'
 
 let started = false
 let formSubmitted = false
@@ -45,6 +44,21 @@ function handleFormSubmissionEvent(event) {
   }
 }
 
+function addAttachedFileIcons() {
+  console.log('checking for already attached files')
+  document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file-name]").forEach( uploadedFile => {
+    console.log('addAttachedFileIcon!')
+    const dataset = uploadedFile.dataset
+    let iconContainer = document.getElementById(dataset.iconContainerId);
+    let detail = {
+      id: dataset.directUploadId,
+      fileName: dataset.uploadedFileName,
+      iconContainer: iconContainer
+    }
+    dispatchEvent(uploadedFile, `dnd-upload:placeholder`, { detail })
+  })
+}
+
 export function start() {
   if (started) { return }
   started = true
@@ -53,9 +67,10 @@ export function start() {
 
   // input[type=file][data-dnd=true]
   document.addEventListener("change", event => {
+    console.log('document:change')
     const input = event.target;
-    if(input.type == 'file' && input.dataset.dataDnd == 'true') {
-      console.log('input:change')
+    if(input.type == 'file' && input.dataset.dnd == 'true') {
+      console.log("input[type=file][data-dnd=true]:change")
       Array.from(input.files).forEach(file => createUploader(input, file))
       input.value = null
     }
@@ -70,6 +85,7 @@ export function start() {
     const target = event.target;
     if(target.classList.contains('asdndzone')) {
       event.preventDefault()
+      console.log(".asdndzone:drop")
       // get the input associated with this dndz
       const input = document.getElementById(target.dataset.dndInputId)
       Array.from(event.dataTransfer.files).forEach(file => createUploader(input, file))
@@ -80,7 +96,7 @@ export function start() {
     if(target.classList.contains('asdndzone')) {
       if( target.dataset.dndDelete == 'true' && target.hasAttribute('data-direct-upload-id') ) {
         event.preventDefault();
-        console.log("Delete Uploaded File: " + target.dataset.directUploadId)
+        console.log(".asdndzone [data-dnd-delete=true][data-direct-upload-id]:click")
         document.querySelectorAll('[data-direct-upload-id="'+target.dataset.directUploadId+'"]').forEach(element => {
           element.remove()
         })
@@ -93,15 +109,6 @@ export function start() {
       }
     }
   })
-  // TODO: onload preparation of the pre-existing uploads
-  // iconContainer isn't accounted for yet
-  // document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file-name]").forEach( uploadedFile => {
-  //   const dataset = uploadedFile.dataset
-  //   let detail = {
-  //     id: dataset.directUploadId,
-  //     fileName: dataset.uploadedFileName,
-  //     iconContainer: iconContainer
-  //   }
-  //   dispatchEvent(uploadedFile, `${eventFamily}:placeholder`, { detail })
-  // })
+  addEventListener("turbolinks:load", addAttachedFileIcons);
+  addEventListener("load", addAttachedFileIcons);
 }

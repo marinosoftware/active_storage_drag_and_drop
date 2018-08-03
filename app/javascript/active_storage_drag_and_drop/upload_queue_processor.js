@@ -1,5 +1,6 @@
 import { dispatchEvent } from "./helpers"
-import { uploaders } from "./direct_upload_controller"
+import { DragAndDropUploadController } from "./direct_upload_controller"
+export const uploaders = []
 
 const eventFamily = 'dnd-uploads'
 
@@ -39,4 +40,10 @@ export class UploadQueueProcessor {
   dispatch(name, detail = {}) {
     return dispatchEvent(this.form, `${eventFamily}:${name}`, { detail })
   }
+}
+
+export function createUploader(input, file) {
+  // your form needs the file_field direct_upload: true, which
+  //  provides data-direct-upload-url
+  uploaders.push( new DragAndDropUploadController(input, file) )
 }
