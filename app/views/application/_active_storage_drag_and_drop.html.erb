@@ -1,15 +1,7 @@
 <label class="asdndzone" id="asdndz-<%= form.object_name %>_<%= method %>" data-dnd-input-id="<%= form.object_name %>_<%= method %>">
   <%= tag_value %>
   <div id="asdndz-<%= form.object_name %>_<%= method %>__icon-container"></div>
-  <%= form.file_field method,
-    multiple: true,
-    direct_upload: true,
-    style: 'display:none;',
-    data: {
-      dnd: true,
-      dnd_zone_id: "asdndz-#{form.object_name}_#{method}",
-      icon_container_id: "asdndz-#{form.object_name}_#{method}__icon-container"
-    } %>
+  <%= form.file_field method, options %>
   <% attachments.each_with_index do |blob,idx| %>
     <%= form.hidden_field method,
       value: blob.signed_id,
