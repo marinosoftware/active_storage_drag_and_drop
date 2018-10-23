@@ -45,5 +45,15 @@ export class UploadQueueProcessor {
 export function createUploader(input, file) {
   // your form needs the file_field direct_upload: true, which
   //  provides data-direct-upload-url
-  uploaders.push( new DragAndDropUploadController(input, file) )
+  console.log(input.accept === '')
+  if (input.accept === '' || input.accept.split(', ').includes(file.type)) {
+    uploaders.push(new DragAndDropUploadController(input, file))
+  } else {
+    const error = Error('Invalid filetype')
+    const event = dispatchEvent(input, `${eventFamily}:error`, { error })
+    if (!event.defaultPrevented) {
+      alert(error)
+    }
+    return event
+  }
 }
