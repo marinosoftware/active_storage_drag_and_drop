@@ -2,7 +2,7 @@
   <%= tag_value %>
   <div id="asdndz-<%= form.object_name %>_<%= method %>__icon-container"></div>
   <%= form.file_field method, options %>
-  <% attachments.each_with_index do |blob,idx| %>
+  <% attachments.reject(&:persisted?).each_with_index do |blob,idx| %>
     <%= form.hidden_field method,
       value: blob.signed_id,
       :multiple => true,
