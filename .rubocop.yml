@@ -1,0 +1,19 @@
+AllCops:
+  Exclude:
+    - 'app/assets/havascripts/active_storage_drag_and_drop.js'
+    - 'lib/active_storage_drag_and_drop/version.rb'
+
+Rails:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/BracesAroundHashParameters:
+  EnforcedStyle: context_dependent
+
+Metrics/LineLength:
+  Max: 99
