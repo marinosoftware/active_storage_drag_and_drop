@@ -46,6 +46,10 @@ Call the method `drag_and_drop_file_field` on your model's form:
   = form.submit
 ```
 The first parameter is a symbol representing the method of the ActiveStorage attachment and an optional second parameter sets the the text on the drag and drop zone.
+Options for the nested file field can be passed as key value pairs:
+```ruby
+form.drag_and_drop_file_field :images, accept: 'image/png, image/jpeg, image/gif, image/tiff'
+```
 In your controller you can permit the params like so:
 ```ruby
 params.permit(:message).require(images: [])
