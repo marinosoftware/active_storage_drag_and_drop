@@ -52,16 +52,23 @@ export class UploadQueueProcessor {
 export function createUploader(input, file) {
   // your form needs the file_field direct_upload: true, which
   //  provides data-direct-upload-url
-  console.log(input.accept === '')
-  if (input.accept === '' || input.accept.split(', ').includes(file.type)) {
-    uploaders.push(new DragAndDropUploadController(input, file))
-  } else {
-    const error = Error('Invalid filetype')
+  const error = validateUploader(input, file)
+  if (error) {
     const event = dispatchEvent(input, `${eventFamily}:error`, { error })
     if (!event.defaultPrevented) {
       alert(error)
     }
     return event
+  }
+  uploaders.push(new DragAndDropUploadController(input, file))
+}
+
+function validateUploader (input, file) {
+  const sizeLimit = input.getAttribute('size_limit')
+  if (input.accept !== '' && !input.accept.split(', ').includes(file.type)) {
+    return new ValidationError('Invalid filetype')
+  } else if (sizeLimit && file.size > sizeLimit) {
+    return new ValidationError(`File too large. Can be no larger than ${humanFileSize(sizeLimit)}`)
   }
 }
 
