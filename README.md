@@ -50,6 +50,10 @@ Options for the nested file field can be passed as key value pairs:
 ```ruby
 form.drag_and_drop_file_field :images, accept: 'image/png, image/jpeg, image/gif, image/tiff'
 ```
+An additional `size_limit` option can be passed which provides validation on the maximum acceptable filesize in bytes:
+```ruby
+form.drag_and_drop_file_field :images, size_limit: 5_000_000 # 5MB upper limit on file size
+```
 In your controller you can permit the params like so:
 ```ruby
 params.permit(:message).require(images: [])
