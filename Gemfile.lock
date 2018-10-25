@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_storage_drag_and_drop (0.3.1)
+    active_storage_drag_and_drop (0.3.2)
       rails (~> 5.2)
 
 GEM
