@@ -4,6 +4,13 @@ export const uploaders = []
 
 const eventFamily = 'dnd-uploads'
 
+class ValidationError extends Error {
+  constructor (...args) {
+    super(...args)
+    Error.captureStackTrace(this, ValidationError)
+  }
+}
+
 export class UploadQueueProcessor {
   constructor(form) {
     this.form = form
