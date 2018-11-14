@@ -25,10 +25,8 @@ var fileUploadUIPainter = function(iconContainer, id, filename, complete) {
 }
 
 // addEventListener("dnd-uploads:start", event => {
-//   console.log("dnd-uploads:start")
 // })
 // addEventListener("dnd-uploads:end", event => {
-//   console.log("dnd-uploads:end")
 // })
 
 addEventListener("dnd-upload:initialize", event => {

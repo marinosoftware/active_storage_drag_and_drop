@@ -17,12 +17,9 @@ export class DragAndDropUploadController {
     this.upload.create((error, blob) => {
       if (error) {
         // Handle the error
-        console.log("Upload Error:");
-        console.log(error);
         this.dispatchError(error)
         callback(error)
       } else {
-        console.log("Upload SUCCESS!!");
 //      // Add an appropriately-named hidden input to the form with a
 //      //  value of blob.signed_id so that the blob ids will be
 //      //  transmitted in the normal upload flow

@@ -45,9 +45,7 @@ function handleFormSubmissionEvent(event) {
 }
 
 function addAttachedFileIcons() {
-  console.log('checking for already attached files')
   document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file-name]").forEach( uploadedFile => {
-    console.log('addAttachedFileIcon!')
     const dataset = uploadedFile.dataset
     let iconContainer = document.getElementById(dataset.iconContainerId);
     let detail = {
@@ -67,26 +65,21 @@ export function start() {
 
   // input[type=file][data-dnd=true]
   document.addEventListener("change", event => {
-    console.log('document:change')
     if(event.target.type == 'file' && event.target.dataset.dnd == 'true') {
       const input = event.target;
-      console.log("input[type=file][data-dnd=true]:change")
       Array.from(input.files).forEach(file => createUploader(input, file))
       input.value = null
     }
   })
   document.addEventListener("dragover", event => {
-    console.log('document:dragover');
     if(helpers.hasClassnameInHeirarchy(event.target, 'asdndzone')) {
       event.preventDefault();
     }
   })
   document.addEventListener("drop", event => {
-    console.log('document:drop');
     let asdndz = helpers.getClassnameFromHeirarchy(event.target, 'asdndzone')
     if(asdndz) {
       event.preventDefault()
-      console.log(".asdndzone:drop")
       // get the input associated with this dndz
       const input = document.getElementById(asdndz.dataset.dndInputId)
       Array.from(event.dataTransfer.files).forEach(file => createUploader(input, file))
@@ -95,7 +88,6 @@ export function start() {
   document.addEventListener("click", event => {
     if( event.target.dataset.dndDelete == 'true' && event.target.hasAttribute('data-direct-upload-id') ) {
       event.preventDefault();
-      console.log("[data-dnd-delete=true][data-direct-upload-id]:click")
       document.querySelectorAll('[data-direct-upload-id="'+event.target.dataset.directUploadId+'"]').forEach(element => {
         element.remove()
       })
