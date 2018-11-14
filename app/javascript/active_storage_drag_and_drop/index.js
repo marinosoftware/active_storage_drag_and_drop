@@ -24,54 +24,60 @@ var fileUploadUIPainter = function(iconContainer, id, filename, complete) {
   `)
 }
 
-addEventListener("dnd-uploads:start", event => {
-  console.log("dnd-uploads:start")
-})
-addEventListener("dnd-uploads:end", event => {
-  console.log("dnd-uploads:end")
-})
+// addEventListener("dnd-uploads:start", event => {
+//   console.log("dnd-uploads:start")
+// })
+// addEventListener("dnd-uploads:end", event => {
+//   console.log("dnd-uploads:end")
+// })
 
 addEventListener("dnd-upload:initialize", event => {
-  console.log("dnd-upload:initialize")
-  const { target, detail } = event
-  const { id, file, iconContainer } = detail
-  fileUploadUIPainter(iconContainer, id, file.name, false)
+  if (!event.defaultPrevented) {
+    const { target, detail } = event
+    const { id, file, iconContainer } = detail
+    fileUploadUIPainter(iconContainer, id, file.name, false)
+  }
 })
 
 addEventListener("dnd-upload:placeholder", event => {
-  console.log("dnd-upload:placeholder")
-  const { target, detail } = event
-  const { id, fileName, iconContainer } = detail
-  fileUploadUIPainter(iconContainer, id, fileName, true)
+  if (!event.defaultPrevented) {
+    const { target, detail } = event
+    const { id, fileName, iconContainer } = detail
+    fileUploadUIPainter(iconContainer, id, fileName, true)
+  }
 })
 
 addEventListener("dnd-upload:start", event => {
-  console.log("dnd-upload:start")
-  const { id } = event.detail
-  const element = document.getElementById(`direct-upload-${id}`)
-  element.classList.remove("direct-upload--pending")
+  if (!event.defaultPrevented) {
+    const { id } = event.detail
+    const element = document.getElementById(`direct-upload-${id}`)
+    element.classList.remove("direct-upload--pending")
+  }
 })
 
 addEventListener("dnd-upload:progress", event => {
-  console.log("dnd-upload:progress")
-  const { id, progress } = event.detail
-  const progressElement = document.getElementById(`direct-upload-progress-${id}`)
-  progressElement.style.width = `${progress}%`
+  if (!event.defaultPrevented) {
+    const { id, progress } = event.detail
+    const progressElement = document.getElementById(`direct-upload-progress-${id}`)
+    progressElement.style.width = `${progress}%`
+  }
 })
 
 addEventListener("dnd-upload:error", event => {
-  console.log("dnd-upload:error")
-  event.preventDefault()
-  const { id, error } = event.detail
-  const element = document.getElementById(`direct-upload-${id}`)
-  element.classList.add("direct-upload--error")
-  element.setAttribute("title", error)
+  if (!event.defaultPrevented) {
+    event.preventDefault()
+    const { id, error } = event.detail
+    const element = document.getElementById(`direct-upload-${id}`)
+    element.classList.add("direct-upload--error")
+    element.setAttribute("title", error)
+  }
 })
 
 addEventListener("dnd-upload:end", event => {
-  console.log("dnd-upload:end")
-  const { id } = event.detail
-  const element = document.getElementById(`direct-upload-${id}`)
-  element.classList.remove("direct-upload--pending")
-  element.classList.add("direct-upload--complete")
+  if (!event.defaultPrevented) {
+    const { id } = event.detail
+    const element = document.getElementById(`direct-upload-${id}`)
+    element.classList.remove("direct-upload--pending")
+    element.classList.add("direct-upload--complete")
+  }
 })
