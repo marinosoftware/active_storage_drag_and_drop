@@ -46,6 +46,15 @@ Call the method `drag_and_drop_file_field` on your model's form:
   = form.submit
 ```
 The first parameter is a symbol representing the method of the ActiveStorage attachment and an optional second parameter sets the the text on the drag and drop zone.
+```ruby
+form.drag_and_drop_file_field :images, 'Drag and drop images here!'
+```
+The content of the dropzone can also be passed as a block of ERB or HAML:
+```haml
+= form.drag_and_drop_file_field :images do
+  %i.far.fa-images
+  Drag images here!
+```
 Options for the nested file field can be passed as key value pairs:
 ```ruby
 form.drag_and_drop_file_field :images, accept: 'image/png, image/jpeg, image/gif, image/tiff'
