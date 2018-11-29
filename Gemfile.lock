@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_storage_drag_and_drop (0.3.4)
+    active_storage_drag_and_drop (0.3.5)
       rack (~> 2.0.6)
       rails (~> 5.2)
 
