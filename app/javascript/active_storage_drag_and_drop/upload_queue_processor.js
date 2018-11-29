@@ -2,7 +2,7 @@ import { dispatchEvent } from "./helpers"
 import { DragAndDropUploadController } from "./direct_upload_controller"
 export const uploaders = []
 
-const eventFamily = 'dnd-uploads'
+const eventFamily = 'dnd-upload'
 
 class ValidationError extends Error {
   constructor (...args) {
