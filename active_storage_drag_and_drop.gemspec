@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Dave O'Keeffe", 'Ian Grant']
   spec.email         = ['ian.grant@marinosoftware.com']
 
-  spec.summary       = 'Provides js drag and drop file upload functionality for active storage.'
+  spec.summary       = 'Provides JS drag and drop file upload functionality for active storage.'
   spec.description   = 'Provides a form helper to make it easy to make drag and drop file upload'\
-                          "fields that work with Rails' Active Storage."
+                          " fields that work with Rails' Active Storage."
   spec.homepage      = 'https://github.com/marinosoftware/active_storage_drag_and_drop'
   spec.license       = 'MIT'
 
