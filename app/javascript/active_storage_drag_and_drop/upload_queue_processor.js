@@ -2,8 +2,6 @@ import { dispatchEvent } from "./helpers"
 import { DragAndDropUploadController } from "./direct_upload_controller"
 export const uploaders = []
 
-const eventFamily = 'dnd-upload'
-
 class ValidationError extends Error {
   constructor (...args) {
     super(...args)
@@ -45,7 +43,7 @@ export class UploadQueueProcessor {
   }
 
   dispatch(name, detail = {}) {
-    return dispatchEvent(this.form, `${eventFamily}:${name}`, { detail })
+    return dispatchEvent(this.form, `dnd-uploads:${name}`, { detail })
   }
 }
 
@@ -54,7 +52,7 @@ export function createUploader(input, file) {
   //  provides data-direct-upload-url
   const error = validateUploader(input, file)
   if (error) {
-    const event = dispatchEvent(input, `${eventFamily}:error`, { error })
+    const event = dispatchEvent(input, `$dnd-upload:error`, { error })
     if (!event.defaultPrevented) {
       alert(error)
     }
