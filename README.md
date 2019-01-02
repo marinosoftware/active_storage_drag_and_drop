@@ -37,9 +37,16 @@ You may also optionally include some basic styles in your application css:
 Add an ActiveStorage attachment to your model:
 ```ruby
 class Message < ApplicationRecord
+  has_one_attached :image
+end
+```
+or add multiple ActiveStorage attachments to your model:
+```ruby
+class Message < ApplicationRecord
   has_many_attached :images
 end
 ```
+
 Call the method `drag_and_drop_file_field` on your model's form:
 ```haml
 = form_with model: @message, local: true do |form|
@@ -48,9 +55,16 @@ Call the method `drag_and_drop_file_field` on your model's form:
 ```
 The first parameter is a symbol representing the method of the ActiveStorage attachment and an
 optional second parameter sets the the text on the drag and drop zone.
-```ruby
+```haml
 form.drag_and_drop_file_field :images, 'Drag and drop images here!'
 ```
+To use support for `has_one_attached` association set as third parameter
+a hash with key/value `multiple: false` :
+```haml
+= form.drag_and_drop_file_field :image, 'Drag and drop images here!', { multiple: false } do
+  %i.far.fa-images
+  Drag images here!
+```  
 The content of the dropzone can also be passed as a block of ERB or HAML:
 ```haml
 = form.drag_and_drop_file_field :images, disabled: false do
@@ -58,11 +72,16 @@ The content of the dropzone can also be passed as a block of ERB or HAML:
   Drag images here!
 ```
 
+
+
 ### Strong Parameters
 
 In your controller you can permit the params like so:
 ```ruby
+# multiple upload
 params.permit(:message).require(images: [])
+# single file upload
+params.permit(:message).require(:image)
 ```
 
 ### Options
