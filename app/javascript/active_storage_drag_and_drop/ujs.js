@@ -14,6 +14,23 @@ function didSubmitRemoteElement(event) {
   }
 }
 
+function processUploadQueue (event) {
+  const form = event.target
+  const { callback } = event.detail
+  const nextUpload = new UploadQueueProcessor(form)
+  if (nextUpload.current_uploaders.length > 0) {
+    nextUpload.start(error => {
+      if (error) {
+        callback(error)
+      } else {
+        callback()
+      }
+    })
+  } else {
+    callback()
+  }
+}
+
 function handleFormSubmissionEvent(event) {
   if(formSubmitted) { return }
   formSubmitted = true
@@ -53,7 +70,7 @@ function addAttachedFileIcons() {
       fileName: dataset.uploadedFileName,
       iconContainer: iconContainer
     }
-    helpers.dispatchEvent(uploadedFile, `dnd-upload:placeholder`, { detail })
+    helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
   })
 }
 
@@ -62,6 +79,7 @@ export function start() {
   started = true
   document.addEventListener("submit", didSubmitForm)
   document.addEventListener("ajax:before", didSubmitRemoteElement)
+  document.addEventListener("dnd-uploads:process-upload-queue", processUploadQueue)
 
   // input[type=file][data-dnd=true]
   document.addEventListener("change", event => {

@@ -104,12 +104,30 @@ for the event and call `preventDefault()` on the event.
 | `dnd-upload:end` | `<input>` | `{id, file, iconContainer}` | A direct upload has ended. |
 | `dnd-uploads:end` | `<form>` | None | All direct uploads have ended. |
 
-To override the default behaviour of any of these events catch them with an event listener and call `preventDefault()` on the event:
+To override the default behaviour of any of these events catch them with an event listener and call
+`preventDefault()` on the event:
 ```javascript
 document.addEventListener('dnd-upload:error', function (event) {
   # do something...
   event.preventDefault()
 })
+```
+
+To asynchronously trigger uploading without form submission dispatch a
+`dnd-uploads:process-upload-queue` event:
+```javascript
+var callback = function(error) {
+  if (error) {
+    // ...handle error...
+  } else {
+    // ...do your stuff
+  }
+}
+
+const uploadEvent = document.createEvent('Event')
+uploadEvent.initEvent('dnd-uploads:process-upload-queue', true, true)
+uploadEvent.detail = { callback }
+form.dispatchEvent(uploadEvent)
 ```
 
 ## Development
