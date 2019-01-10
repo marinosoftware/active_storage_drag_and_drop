@@ -1,4 +1,19 @@
-$LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+# $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
+require File.expand_path('../test/dummy/config/environment.rb', __dir__)
+
+require 'bundler/setup'
+require 'active_support'
+require 'active_support/test_case'
+require 'active_support/testing/autorun'
+require 'active_storage'
+require 'active_storage/engine'
+require 'pry'
+require 'nokogiri'
+
+require 'active_job'
+ActiveJob::Base.queue_adapter = :test
+ActiveJob::Base.logger = nil
+
 require 'active_storage_drag_and_drop'
 
 require 'minitest/autorun'

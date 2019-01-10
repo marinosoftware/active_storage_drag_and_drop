@@ -29,9 +29,14 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_development_dependency 'bootsnap'
   spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'listen'
   spec.add_development_dependency 'minitest', '~> 5.0'
+  spec.add_development_dependency 'nokogiri'
+  spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'sqlite3'
   spec.add_dependency 'rack', '~> 2.0.6'
   spec.add_dependency 'rails', '~> 5.2'
 end
