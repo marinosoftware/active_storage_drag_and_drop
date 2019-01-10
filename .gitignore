@@ -24,3 +24,5 @@ active_storage_drag_and_drop-*.gem
 !/test/dummy/storage/.keep
 
 /test/dummy/.byebug_history
+
+/test/dummy/db/migrate/*.active_storage.rb
