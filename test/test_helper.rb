@@ -17,3 +17,8 @@ ActiveJob::Base.logger = nil
 require 'active_storage_drag_and_drop'
 
 require 'minitest/autorun'
+
+def parse_html(html)
+  html = CGI.unescapeHTML(html)
+  Nokogiri::HTML(html).at_css('body > *')
+end
