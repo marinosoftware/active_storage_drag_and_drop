@@ -52,7 +52,13 @@ export function createUploader(input, file) {
   //  provides data-direct-upload-url
   const error = validateUploader(input, file)
   if (error) {
-    const event = dispatchEvent(input, `$dnd-upload:error`, { error })
+    let detail = {
+      id: null,
+      file: file,
+      iconContainer: input.dataset.iconContainerId,
+      error: error
+    }
+    const event = dispatchEvent(input, `$dnd-upload:error`, { detail })
     if (!event.defaultPrevented) {
       alert(error)
     }
