@@ -1,8 +1,7 @@
 module ActiveStorageDragAndDrop
   module Rails
     module FormBuilder
-      include ActionView::Helpers::TagHelper
-      include Haml::Helpers if defined? Haml
+      delegate :capture, :content_tag, :tag, :safe_join, to: :@template
 
       def drag_and_drop_file_field(method, content_or_options = nil, options = {}, &block)
         if block_given?
@@ -42,17 +41,17 @@ module ActiveStorageDragAndDrop
 
       def drag_and_drop_file_field_string(method, content = nil, options = {})
         ref = "#{object_name}_#{method}"
-        content ||= ''
+        content = [content]
         content << tag.div(id: "asdndz-#{ref}__icon-container")
         content << file_field(method, file_field_options(method, options))
-        content << unpersisted_attachment_fields(method)
-        content_tag :label, content, class: 'asdndzone', id: "asdndz-#{ref}",
-                                     'data-dnd-input-id': ref
+        content += unpersisted_attachment_fields(method)
+        content_tag :label, safe_join(content), class: 'asdndzone', id: "asdndz-#{ref}",
+                                                'data-dnd-input-id': ref
       end
 
       def unpersisted_attachment_fields(method)
         attachments = @object.send(method).reject(&:persisted?)
-        safe_join(attachments.map.with_index do |blob, idx|
+        attachments.map.with_index do |blob, idx|
           hidden_field method,
                        mutiple: :multiple, value: blob.signed_id,
                        name: "#{object_name}[#{method}][]",
@@ -60,7 +59,7 @@ module ActiveStorageDragAndDrop
                          direct_upload_id: idx, uploaded_file_name: blob.filename,
                          icon_container_id: "asdndz-#{object_name}_#{method}__icon-container"
                        }
-        end)
+        end
       end
 
       def default_file_field_options(method)

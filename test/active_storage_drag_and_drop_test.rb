@@ -11,6 +11,7 @@ class ActiveStorageDragAndDropTest < Minitest::Test
     return @template if @template
 
     @template = Object.new
+    @template.extend ActionView::Helpers::TagHelper
     @template.extend ActionView::Helpers::FormHelper
     @template.extend ActionView::Helpers::FormTagHelper
   end
