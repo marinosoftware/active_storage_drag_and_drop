@@ -4,7 +4,7 @@ require 'nokogiri'
 
 class User < ActiveRecord::Base
   has_many_attached :highlights
-end
+end unless defined? User
 
 class ActiveStorageDragAndDropTest < Minitest::Test
   def template

@@ -1,3 +1,4 @@
+ENV['RAILS_ENV'] = 'test'
 # $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 
