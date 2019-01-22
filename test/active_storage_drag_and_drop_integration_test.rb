@@ -7,9 +7,9 @@ Rails.application.routes.draw do
 end
 
 # app/models/user.rb
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many_attached :highlights
-end unless defined? User
+end
 
 # app/views/users/new.html.erb
 USERS_NEW_TEMPLATE = <<-HTML.freeze

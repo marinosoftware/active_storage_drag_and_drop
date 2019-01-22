@@ -2,9 +2,9 @@ require 'test_helper'
 require 'database/setup'
 require 'nokogiri'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many_attached :highlights
-end unless defined? User
+end
 
 class ActiveStorageDragAndDropTest < Minitest::Test
   def template

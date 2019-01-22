@@ -1,13 +1,12 @@
 AllCops:
   Exclude:
-    - 'app/assets/havascripts/active_storage_drag_and_drop.js'
     - 'lib/active_storage_drag_and_drop/version.rb'
+    - 'test/dummy/db/migrate/*'
+    - 'test/dummy/bin/*'
+    - 'test/dummy/config/**/*'
 
 Rails:
   Enabled: true
-
-Rails/OutputSafety:
-  Enabled: false
 
 Style/Documentation:
   Enabled: false
@@ -20,3 +19,7 @@ Style/BracesAroundHashParameters:
 
 Metrics/LineLength:
   Max: 99
+
+Metrics/BlockLength:
+  Exclude:
+    - 'active_storage_drag_and_drop.gemspec'
