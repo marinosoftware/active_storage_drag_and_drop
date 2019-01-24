@@ -1,5 +1,5 @@
-import { dispatchEvent } from "./helpers"
-import { DragAndDropUploadController } from "./direct_upload_controller"
+import { dispatchEvent } from './helpers'
+import { DragAndDropUploadController } from './direct_upload_controller'
 export const uploaders = []
 
 class ValidationError extends Error {
@@ -10,44 +10,44 @@ class ValidationError extends Error {
 }
 
 export class UploadQueueProcessor {
-  constructor(form) {
+  constructor (form) {
     this.form = form
     this.current_uploaders = []
     uploaders.forEach(uploader => {
-      if( form == uploader.form ) {
+      if (form === uploader.form) {
         this.current_uploaders.push(uploader)
       }
     })
   }
 
-  start(callback) {
+  start (callback) {
     const startNextUploader = () => {
       const nextUploader = this.current_uploaders.shift()
       if (nextUploader) {
         nextUploader.start(error => {
           if (error) {
             callback(error)
-            this.dispatch("end")
+            this.dispatch('end')
           } else {
             startNextUploader()
           }
         })
       } else {
         callback()
-        this.dispatch("end")
+        this.dispatch('end')
       }
     }
 
-    this.dispatch("start")
+    this.dispatch('start')
     startNextUploader()
   }
 
-  dispatch(name, detail = {}) {
+  dispatch (name, detail = {}) {
     return dispatchEvent(this.form, `dnd-uploads:${name}`, { detail })
   }
 }
 
-export function createUploader(input, file) {
+export function createUploader (input, file) {
   // your form needs the file_field direct_upload: true, which
   //  provides data-direct-upload-url
   const error = validateUploader(input, file)
@@ -60,7 +60,7 @@ export function createUploader(input, file) {
     }
     const event = dispatchEvent(input, `$dnd-upload:error`, { detail })
     if (!event.defaultPrevented) {
-      alert(error)
+      window.alert(error)
     }
     return event
   }

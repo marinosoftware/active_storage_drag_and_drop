@@ -1,21 +1,21 @@
-import { start } from "./ujs"
+import { start } from './ujs'
 
 export { start }
 
-function autostart() {
+function autostart () {
   start()
 }
 
 setTimeout(autostart, 1)
 
-//----------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------
 // UI Events - this code is completely outside the draganddrop lib - it's just reacting to events
-//----------------------------------------------------------------------------------------------------
-var fileUploadUIPainter = function(iconContainer, id, filename, complete) {
+// ----------------------------------------------------------------------------------------------------
+var fileUploadUIPainter = function (iconContainer, id, filename, complete) {
   // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
-  var cname = ( complete ? 'complete' : 'pending' )
-  var progress = ( complete ? 100 : 0 )
-  iconContainer.insertAdjacentHTML("beforeend", `
+  var cname = (complete ? 'complete' : 'pending')
+  var progress = (complete ? 100 : 0)
+  iconContainer.insertAdjacentHTML('beforeend', `
     <div id="direct-upload-${id}" class="direct-upload direct-upload--${cname}" data-direct-upload-id="${id}">
       <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: ${progress}%"></div>
       <span class="direct-upload__filename">${filename}</span>
@@ -24,36 +24,31 @@ var fileUploadUIPainter = function(iconContainer, id, filename, complete) {
   `)
 }
 
-// addEventListener("dnd-uploads:start", event => {
-// })
-// addEventListener("dnd-uploads:end", event => {
-// })
-
-addEventListener("dnd-upload:initialize", event => {
+document.addEventListener('dnd-upload:initialize', event => {
   if (!event.defaultPrevented) {
-    const { target, detail } = event
+    const { detail } = event
     const { id, file, iconContainer } = detail
     fileUploadUIPainter(iconContainer, id, file.name, false)
   }
 })
 
-addEventListener("dnd-upload:placeholder", event => {
+document.addEventListener('dnd-upload:placeholder', event => {
   if (!event.defaultPrevented) {
-    const { target, detail } = event
+    const { detail } = event
     const { id, fileName, iconContainer } = detail
     fileUploadUIPainter(iconContainer, id, fileName, true)
   }
 })
 
-addEventListener("dnd-upload:start", event => {
+document.addEventListener('dnd-upload:start', event => {
   if (!event.defaultPrevented) {
     const { id } = event.detail
     const element = document.getElementById(`direct-upload-${id}`)
-    element.classList.remove("direct-upload--pending")
+    element.classList.remove('direct-upload--pending')
   }
 })
 
-addEventListener("dnd-upload:progress", event => {
+document.addEventListener('dnd-upload:progress', event => {
   if (!event.defaultPrevented) {
     const { id, progress } = event.detail
     const progressElement = document.getElementById(`direct-upload-progress-${id}`)
@@ -61,21 +56,21 @@ addEventListener("dnd-upload:progress", event => {
   }
 })
 
-addEventListener("dnd-upload:error", event => {
+document.addEventListener('dnd-upload:error', event => {
   if (!event.defaultPrevented) {
     event.preventDefault()
     const { id, error } = event.detail
     const element = document.getElementById(`direct-upload-${id}`)
-    element.classList.add("direct-upload--error")
-    element.setAttribute("title", error)
+    element.classList.add('direct-upload--error')
+    element.setAttribute('title', error)
   }
 })
 
-addEventListener("dnd-upload:end", event => {
+document.addEventListener('dnd-upload:end', event => {
   if (!event.defaultPrevented) {
     const { id } = event.detail
     const element = document.getElementById(`direct-upload-${id}`)
-    element.classList.remove("direct-upload--pending")
-    element.classList.add("direct-upload--complete")
+    element.classList.remove('direct-upload--pending')
+    element.classList.add('direct-upload--complete')
   }
 })
