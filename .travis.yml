@@ -2,9 +2,13 @@ sudo: false
 language: ruby
 rvm:
   - 2.5.0
-before_install: gem install bundler -v 1.16.1
 addons:
   firefox: latest
+before_install:
+  - gem install bundler -v 1.16.1
+  - nvm install 11.7.0
+before_script: bundle exec yarn
 script:
   - bundle exec rake
   - bundle exec rubocop
+  - bundle exec yarn eslint .
