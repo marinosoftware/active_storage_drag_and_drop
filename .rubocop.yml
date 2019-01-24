@@ -4,6 +4,7 @@ AllCops:
     - 'test/dummy/db/migrate/*'
     - 'test/dummy/bin/*'
     - 'test/dummy/config/**/*'
+    - 'vendor/bundle/**/*'
 
 Rails:
   Enabled: true

@@ -43,6 +43,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'puma'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'redcarpet'
+  spec.add_development_dependency 'rubocop'
   spec.add_development_dependency 'selenium-webdriver'
   spec.add_development_dependency 'sqlite3'
   spec.add_dependency 'rack', '~> 2.0.6'
