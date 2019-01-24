@@ -1,7 +1,11 @@
 ENV['RAILS_ENV'] = 'test'
-# $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
-require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 
+require 'simplecov'
+SimpleCov.start do
+  add_filter 'test'
+end
+
+require File.expand_path('../test/dummy/config/environment.rb', __dir__)
 require 'bundler/setup'
 require 'active_support'
 require 'active_support/test_case'

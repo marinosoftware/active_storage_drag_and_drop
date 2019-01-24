@@ -1,15 +1,33 @@
 sudo: false
-cache: bundler
 language: ruby
 rvm:
   - 2.5.0
+
+cache:
+  bundler: true
+  directories:
+    - node_modules
 addons:
   firefox: latest
+env:
+  global:
+    CC_TEST_REPORTER_ID=93b20ad2a94eb5d9feb97dca94b2d1df4243fa3d715d5d6c1c61bc9c6199f105
+
 before_install:
   - gem install bundler -v 1.16.1
   - nvm install 11.7.0
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+
 before_script: bundle exec yarn
+
 script:
   - bundle exec rake
   - bundle exec rubocop
   - bundle exec yarn eslint .
+
+after_script:
+  - ./cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.backend.json coverage/backend/.resultset.json
+  - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.frontend.json coverage/frontend/lcov.info
+  - ./cc-test-reporter sum-coverage coverage/codeclimate.*.json -p 2
+  - if [[ "$TRAVIS_TEST_RESULT" == 0 ]]; then ./cc-test-reporter upload-coverage; fi
