@@ -3,3 +3,5 @@ language: ruby
 rvm:
   - 2.5.0
 before_install: gem install bundler -v 1.16.1
+addons:
+  firefox: latest
