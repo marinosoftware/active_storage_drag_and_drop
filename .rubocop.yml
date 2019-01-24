@@ -1,10 +1,11 @@
 AllCops:
+  TargetRubyVersion: 2.5.0
   Exclude:
     - 'lib/active_storage_drag_and_drop/version.rb'
     - 'test/dummy/db/migrate/*'
     - 'test/dummy/bin/*'
     - 'test/dummy/config/**/*'
-    - 'vendor/bundle/**/*'
+    - 'vendor/**/*'
 
 Rails:
   Enabled: true

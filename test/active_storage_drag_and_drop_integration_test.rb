@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'integration_test_helper'
 require 'database/setup'
 
@@ -12,7 +14,7 @@ class User < ApplicationRecord
 end
 
 # app/views/users/new.html.erb
-USERS_NEW_TEMPLATE = <<-HTML.freeze
+USERS_NEW_TEMPLATE = <<-HTML
   <%= form_with model: @user, url: user_path do |form| %>
     <%= form.drag_and_drop_file_field(:highlights) do %>
       <strong>Drag and Drop</strong> files here or <strong>click to browse</strong>

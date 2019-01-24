@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_storage_drag_and_drop/version'
 require 'active_storage_drag_and_drop/form_builder'
 

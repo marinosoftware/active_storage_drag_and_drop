@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Dummy::Application.load_tasks
 Rails.application.routes.disable_clear_and_finalize = true
 

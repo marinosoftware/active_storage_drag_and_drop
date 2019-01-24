@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveStorageDragAndDrop
   # Custom FormBuilder module. All code in this module is executed within the context of
   # ActionView::Helpers::FormBuilder when ActionView is first loaded via the
