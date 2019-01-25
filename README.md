@@ -1,5 +1,12 @@
 # Active Storage Drag and Drop
 
+[![Gem Version](https://badge.fury.io/rb/active_storage_drag_and_drop.svg)](https://badge.fury.io/rb/active_storage_drag_and_drop)
+[![Build Status](https://travis-ci.org/marinosoftware/active_storage_drag_and_drop.svg?branch=master)](https://travis-ci.org/marinosoftware/active_storage_drag_and_drop)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/13860b97c99c3a989176/test_coverage)](https://codeclimate.com/github/marinosoftware/active_storage_drag_and_drop/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/13860b97c99c3a989176/maintainability)](https://codeclimate.com/github/marinosoftware/active_storage_drag_and_drop/maintainability)
+[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/gems/active_storage_drag_and_drop)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
 Provides a form helper to make it easy to make drag and drop file upload fields that work with
 Rails' [ActiveStorage](https://github.com/rails/rails/tree/master/activestorage).
 
