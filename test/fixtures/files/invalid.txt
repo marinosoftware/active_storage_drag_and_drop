@@ -1,0 +1,1 @@
+This is a file that is designed to be cause validations to fail for integration tests.
