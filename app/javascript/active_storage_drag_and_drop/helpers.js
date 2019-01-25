@@ -1,4 +1,3 @@
-
 export function dispatchEvent (element, type, eventInit = {}) {
   const { bubbles, cancelable, detail } = eventInit
   const event = document.createEvent('Event')
@@ -8,6 +7,24 @@ export function dispatchEvent (element, type, eventInit = {}) {
   return event
 }
 
+export function defaultErrorEventUI (event) {
+  if (!event.defaultPrevented) {
+    const { id, error } = event.detail
+    const element = document.getElementById(`direct-upload-${id}`)
+    element.classList.add('direct-upload--error')
+    element.setAttribute('title', error)
+  }
+}
+
+export function defaultEndEventUI (event) {
+  if (!event.defaultPrevented) {
+    const { id } = event.detail
+    const element = document.getElementById(`direct-upload-${id}`)
+    element.classList.remove('direct-upload--pending')
+    element.classList.add('direct-upload--complete')
+  }
+}
+
 export function hasClassnameInHeirarchy (element, classname) {
   if (element && element.classList) {
     if (element.classList.contains(classname)) {
@@ -15,8 +32,6 @@ export function hasClassnameInHeirarchy (element, classname) {
     } else {
       return hasClassnameInHeirarchy(element.parentNode, classname)
     }
-  } else {
-    return false
   }
 }
 
@@ -27,8 +42,6 @@ export function getClassnameFromHeirarchy (element, classname) {
     } else {
       return getClassnameFromHeirarchy(element.parentNode, classname)
     }
-  } else {
-    return null
   }
 }
 

@@ -79,6 +79,45 @@ function addAttachedFileIcons () {
   })
 }
 
+function createUploadersForFileInput (event) {
+  if (event.target.type === 'file' && event.target.dataset.dnd === 'true') {
+    const input = event.target
+    Array.from(input.files).forEach(file => createUploader(input, file))
+    input.value = null
+  }
+}
+
+function preventDragover (event) {
+  if (helpers.hasClassnameInHeirarchy(event.target, 'asdndzone')) {
+    event.preventDefault()
+  }
+}
+
+function createUploadersForDroppedFiles (event) {
+  let asdndz = helpers.getClassnameFromHeirarchy(event.target, 'asdndzone')
+  if (asdndz) {
+    event.preventDefault()
+    // get the input associated with this dndz
+    const input = document.getElementById(asdndz.dataset.dndInputId)
+    Array.from(event.dataTransfer.files).forEach(file => createUploader(input, file))
+  }
+}
+
+function removeFileFromQueue (event) {
+  if (event.target.dataset.dndDelete === 'true' && event.target.hasAttribute('data-direct-upload-id')) {
+    event.preventDefault()
+    document.querySelectorAll('[data-direct-upload-id="' + event.target.dataset.directUploadId + '"]').forEach(element => {
+      element.remove()
+    })
+    for (var i = 0; i < uploaders.length; i++) {
+      if (uploaders[i].upload.id === event.target.dataset.directUploadId) {
+        uploaders.splice(i, 1)
+        break
+      }
+    }
+  }
+}
+
 export function start () {
   if (started) { return }
   started = true
@@ -87,40 +126,9 @@ export function start () {
   document.addEventListener('dnd-uploads:process-upload-queue', processUploadQueue)
 
   // input[type=file][data-dnd=true]
-  document.addEventListener('change', event => {
-    if (event.target.type === 'file' && event.target.dataset.dnd === 'true') {
-      const input = event.target
-      Array.from(input.files).forEach(file => createUploader(input, file))
-      input.value = null
-    }
-  })
-  document.addEventListener('dragover', event => {
-    if (helpers.hasClassnameInHeirarchy(event.target, 'asdndzone')) {
-      event.preventDefault()
-    }
-  })
-  document.addEventListener('drop', event => {
-    let asdndz = helpers.getClassnameFromHeirarchy(event.target, 'asdndzone')
-    if (asdndz) {
-      event.preventDefault()
-      // get the input associated with this dndz
-      const input = document.getElementById(asdndz.dataset.dndInputId)
-      Array.from(event.dataTransfer.files).forEach(file => createUploader(input, file))
-    }
-  })
-  document.addEventListener('click', event => {
-    if (event.target.dataset.dndDelete === 'true' && event.target.hasAttribute('data-direct-upload-id')) {
-      event.preventDefault()
-      document.querySelectorAll('[data-direct-upload-id="' + event.target.dataset.directUploadId + '"]').forEach(element => {
-        element.remove()
-      })
-      for (var i = 0; i < uploaders.length; i++) {
-        if (uploaders[i].upload.id === event.target.dataset.directUploadId) {
-          uploaders.splice(i, 1)
-          break
-        }
-      }
-    }
-  })
+  document.addEventListener('change', createUploadersForFileInput)
+  document.addEventListener('dragover', preventDragover)
+  document.addEventListener('drop', createUploadersForDroppedFiles)
+  document.addEventListener('click', removeFileFromQueue)
   addAttachedFileIcons()
 }

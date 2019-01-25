@@ -1,4 +1,4 @@
-import { dispatchEvent, fileUploadUIPainter } from './helpers'
+import { dispatchEvent, defaultErrorEventUI, defaultEndEventUI, fileUploadUIPainter } from './helpers'
 import { DirectUpload } from 'activestorage'
 const eventFamily = 'dnd-upload'
 
@@ -35,12 +35,7 @@ export class DragAndDropUploadController {
         hiddenField.setAttribute('data-direct-upload-id', this.upload.id)
         this.form.appendChild(hiddenField)
         let event = this.dispatch('end')
-        if (!event.defaultPrevented) {
-          const { id } = event.detail
-          const element = document.getElementById(`direct-upload-${id}`)
-          element.classList.remove('direct-upload--pending')
-          element.classList.add('direct-upload--complete')
-        }
+        defaultEndEventUI(event)
         callback(error)
       }
     })
@@ -55,12 +50,7 @@ export class DragAndDropUploadController {
 
   dispatchError (error) {
     const event = this.dispatch('error', { error })
-    if (!event.defaultPrevented) {
-      const { id, error } = event.detail
-      const element = document.getElementById(`direct-upload-${id}`)
-      element.classList.add('direct-upload--error')
-      element.setAttribute('title', error)
-    }
+    defaultErrorEventUI(event)
   }
 
   directUploadWillCreateBlobWithXHR (xhr) {

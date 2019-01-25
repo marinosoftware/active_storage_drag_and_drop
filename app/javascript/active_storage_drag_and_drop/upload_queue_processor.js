@@ -1,4 +1,4 @@
-import { dispatchEvent, fileUploadUIPainter } from './helpers'
+import { dispatchEvent, defaultErrorEventUI, defaultEndEventUI, fileUploadUIPainter } from './helpers'
 import { DragAndDropUploadController } from './direct_upload_controller'
 export const uploaders = []
 
@@ -35,12 +35,7 @@ export class UploadQueueProcessor {
       } else {
         callback()
         let event = this.dispatch('end')
-        if (!event.defaultPrevented) {
-          const { id } = event.detail
-          const element = document.getElementById(`direct-upload-${id}`)
-          element.classList.remove('direct-upload--pending')
-          element.classList.add('direct-upload--complete')
-        }
+        defaultEndEventUI(event)
       }
     }
 
@@ -54,12 +49,7 @@ export class UploadQueueProcessor {
 
   dispatchError (error) {
     const event = this.dispatch('error', { error })
-    if (!event.defaultPrevented) {
-      const { id, error } = event.detail
-      const element = document.getElementById(`direct-upload-${id}`)
-      element.classList.add('direct-upload--error')
-      element.setAttribute('title', error)
-    }
+    defaultErrorEventUI(event)
   }
 }
 
