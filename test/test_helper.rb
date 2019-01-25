@@ -29,3 +29,7 @@ def parse_html(html)
   html = CGI.unescapeHTML(html)
   Nokogiri::HTML(html).at_css('body > *')
 end
+
+def file_path(filename)
+  File.join __dir__, 'fixtures', 'files', filename
+end

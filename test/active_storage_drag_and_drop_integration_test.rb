@@ -63,7 +63,7 @@ class ActiveStorageDragAndDropIntegrationTest < ActionDispatch::IntegrationTest
 
   test 'hidden file field can attach a file' do
     visit 'user/new'
-    attach_file 'user_highlights', __dir__ + '/fixtures/files/arrow.png', make_visible: true
+    attach_file 'user_highlights', file_path('arrow.png'), make_visible: true
     click_on 'Create User'
     assert_match 'arrow.png', User.last.highlights.first.filename.to_s
   end
