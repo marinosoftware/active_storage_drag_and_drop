@@ -70,7 +70,12 @@ function addAttachedFileIcons () {
       fileName: dataset.uploadedFileName,
       iconContainer: iconContainer
     }
-    helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
+    let event = helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
+    if (!event.defaultPrevented) {
+      const { detail } = event
+      const { id, fileName, iconContainer } = detail
+      helpers.fileUploadUIPainter(iconContainer, id, fileName, true)
+    }
   })
 }
 
@@ -117,6 +122,5 @@ export function start () {
       }
     }
   })
-  document.addEventListener('turbolinks:load', addAttachedFileIcons)
-  document.addEventListener('load', addAttachedFileIcons)
+  addAttachedFileIcons()
 }

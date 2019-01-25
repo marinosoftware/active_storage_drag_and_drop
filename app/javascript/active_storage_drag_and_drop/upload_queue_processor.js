@@ -1,4 +1,4 @@
-import { dispatchEvent } from './helpers'
+import { dispatchEvent, fileUploadUIPainter } from './helpers'
 import { DragAndDropUploadController } from './direct_upload_controller'
 export const uploaders = []
 
@@ -26,15 +26,21 @@ export class UploadQueueProcessor {
       if (nextUploader) {
         nextUploader.start(error => {
           if (error) {
+            this.dispatchError(error)
             callback(error)
-            this.dispatch('end')
           } else {
             startNextUploader()
           }
         })
       } else {
         callback()
-        this.dispatch('end')
+        let event = this.dispatch('end')
+        if (!event.defaultPrevented) {
+          const { id } = event.detail
+          const element = document.getElementById(`direct-upload-${id}`)
+          element.classList.remove('direct-upload--pending')
+          element.classList.add('direct-upload--complete')
+        }
       }
     }
 
@@ -44,6 +50,16 @@ export class UploadQueueProcessor {
 
   dispatch (name, detail = {}) {
     return dispatchEvent(this.form, `dnd-uploads:${name}`, { detail })
+  }
+
+  dispatchError (error) {
+    const event = this.dispatch('error', { error })
+    if (!event.defaultPrevented) {
+      const { id, error } = event.detail
+      const element = document.getElementById(`direct-upload-${id}`)
+      element.classList.add('direct-upload--error')
+      element.setAttribute('title', error)
+    }
   }
 }
 
@@ -58,9 +74,13 @@ export function createUploader (input, file) {
       iconContainer: input.dataset.iconContainerId,
       error: error
     }
-    const event = dispatchEvent(input, `$dnd-upload:error`, { detail })
+    let event = dispatchEvent(input, 'dnd-upload:error', { detail })
     if (!event.defaultPrevented) {
-      window.alert(error)
+      const { error, iconContainer } = event.detail
+      fileUploadUIPainter(iconContainer, 'error', file.name, true)
+      const element = document.getElementById(`direct-upload-error`)
+      element.classList.add('direct-upload--error')
+      element.setAttribute('title', error)
     }
     return event
   }

@@ -1,4 +1,4 @@
-import { dispatchEvent } from './helpers'
+import { dispatchEvent, fileUploadUIPainter } from './helpers'
 import { DirectUpload } from 'activestorage'
 const eventFamily = 'dnd-upload'
 
@@ -10,7 +10,12 @@ export class DragAndDropUploadController {
     this.iconContainer = document.getElementById(this.input.dataset.iconContainerId)
     this.file = file
     this.upload = new DirectUpload(this.file, this.url, this)
-    this.dispatch('initialize')
+    let event = this.dispatch('initialize')
+    if (!event.defaultPrevented) {
+      const { detail } = event
+      const { id, file, iconContainer } = detail
+      fileUploadUIPainter(iconContainer, id, file.name, false)
+    }
   }
 
   start (callback) {
@@ -29,7 +34,13 @@ export class DragAndDropUploadController {
         hiddenField.name = this.input.name
         hiddenField.setAttribute('data-direct-upload-id', this.upload.id)
         this.form.appendChild(hiddenField)
-        this.dispatch('end')
+        let event = this.dispatch('end')
+        if (!event.defaultPrevented) {
+          const { id } = event.detail
+          const element = document.getElementById(`direct-upload-${id}`)
+          element.classList.remove('direct-upload--pending')
+          element.classList.add('direct-upload--complete')
+        }
         callback(error)
       }
     })
@@ -45,7 +56,10 @@ export class DragAndDropUploadController {
   dispatchError (error) {
     const event = this.dispatch('error', { error })
     if (!event.defaultPrevented) {
-      window.alert(error)
+      const { id, error } = event.detail
+      const element = document.getElementById(`direct-upload-${id}`)
+      element.classList.add('direct-upload--error')
+      element.setAttribute('title', error)
     }
   }
 
@@ -61,7 +75,12 @@ export class DragAndDropUploadController {
   uploadRequestDidProgress (event) {
     const progress = event.loaded / event.total * 100
     if (progress) {
-      this.dispatch('progress', { progress })
+      let event = this.dispatch('progress', { progress })
+      if (!event.defaultPrevented) {
+        const { id, progress } = event.detail
+        const progressElement = document.getElementById(`direct-upload-progress-${id}`)
+        progressElement.style.width = `${progress}%`
+      }
     }
   }
 }

@@ -31,3 +31,16 @@ export function getClassnameFromHeirarchy (element, classname) {
     return null
   }
 }
+
+export function fileUploadUIPainter (iconContainer, id, filename, complete) {
+  // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
+  var cname = (complete ? 'complete' : 'pending')
+  var progress = (complete ? 100 : 0)
+  iconContainer.insertAdjacentHTML('beforeend', `
+    <div id="direct-upload-${id}" class="direct-upload direct-upload--${cname}" data-direct-upload-id="${id}">
+      <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: ${progress}%"></div>
+      <span class="direct-upload__filename">${filename}</span>
+    </div>
+    <a href='remove' class='direct-upload__remove' data-dnd-delete='true' data-direct-upload-id="${id}">x</a>
+  `)
+}
