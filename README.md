@@ -44,9 +44,16 @@ You may also optionally include some basic styles in your application css:
 Add an ActiveStorage attachment to your model:
 ```ruby
 class Message < ApplicationRecord
+  has_one_attached :image
+end
+```
+or add multiple ActiveStorage attachments to your model:
+```ruby
+class Message < ApplicationRecord
   has_many_attached :images
 end
 ```
+
 Call the method `drag_and_drop_file_field` on your model's form:
 ```haml
 = form_with model: @message, local: true do |form|
@@ -65,10 +72,15 @@ The content of the dropzone can also be passed as a block of ERB or HAML:
   Drag images here!
 ```
 
+
+
 ### Strong Parameters
 
 In your controller you can permit the params like so:
 ```ruby
+# single file upload
+params.permit(:message).require(:image)
+# multiple upload
 params.permit(:message).require(images: [])
 ```
 
@@ -145,9 +157,9 @@ interactive prompt that will allow you to experiment.
 
 After making a change to the javascript in `app/javascript` compile it to
 `app/assets/javascripts/active_storage_drag_and_drop.js` by running
-`node_modules/webpack-command/lib/cli.js`.
+`yarn webpack`.
 
-Use `node_modules/webpack-command/lib/cli.js --mode=development --watch` to build files
+Use `yarn webpack --mode=development --watch` to build files
 automatically on change.  Use with `gem 'active_storage_drag_and_drop', path: [local-gem-repo]` to
 develop and debug the gem in place in a rails app.
 

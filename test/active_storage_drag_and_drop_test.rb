@@ -5,6 +5,7 @@ require 'database/setup'
 require 'nokogiri'
 
 class User < ApplicationRecord
+  has_one_attached :avatar
   has_many_attached :highlights
 end
 
@@ -26,11 +27,18 @@ class ActiveStorageDragAndDropTest < Minitest::Test
     @user_form ||= ActionView::Helpers::FormBuilder.new(:user, user, template, {})
   end
 
-  def default_field
-    return @default_field if @default_field
+  def default_avatar_field
+    return @default_avatar_field if @default_avatar_field
 
-    dnd_field = user_form.drag_and_drop_file_field(:highlights)
-    @default_field = parse_html(dnd_field)
+    dnd_avatar_field = user_form.drag_and_drop_file_field(:avatar)
+    @default_avatar_field = parse_html(dnd_avatar_field)
+  end
+
+  def default_highlights_field
+    return @default_highlights_field if @default_highlights_field
+
+    dnd_highlights_field = user_form.drag_and_drop_file_field(:highlights)
+    @default_highlights_field = parse_html(dnd_highlights_field)
   end
 
   def test_that_it_has_a_version_number
@@ -38,53 +46,58 @@ class ActiveStorageDragAndDropTest < Minitest::Test
   end
 
   def test_it_generates_a_top_level_label
-    assert_equal 'label', default_field.node_name
+    assert_equal 'label', default_highlights_field.node_name
   end
 
   def test_it_has_the_correct_class
-    assert_equal 'asdndzone', default_field['class']
+    assert_equal 'asdndzone', default_highlights_field['class']
   end
 
   def test_it_has_the_correct_id
-    assert_equal 'asdndz-user_highlights', default_field['id']
+    assert_equal 'asdndz-user_highlights', default_highlights_field['id']
   end
 
   def test_it_has_the_correct_data
-    assert_equal 'user_highlights', default_field['data-dnd-input-id']
+    assert_equal 'user_highlights', default_highlights_field['data-dnd-input-id']
   end
 
   def test_it_contains_an_icon_container
-    assert default_field.at_css('#asdndz-user_highlights__icon-container')
+    assert default_highlights_field.at_css('#asdndz-user_highlights__icon-container')
   end
 
   def test_it_contains_a_file_input
-    assert default_field.at_css('input[type="file"]')
+    assert default_highlights_field.at_css('input[type="file"]')
   end
 
   def test_file_input_references_icon_container
     assert_equal 'asdndz-user_highlights__icon-container',
-                 default_field.at_css('input[type="file"]')['data-icon-container-id']
+                 default_highlights_field.at_css('input[type="file"]')['data-icon-container-id']
   end
 
   def test_file_input_references_label_parent
     assert_equal 'asdndz-user_highlights',
-                 default_field.at_css('input[type="file"]')['data-dnd-zone-id']
+                 default_highlights_field.at_css('input[type="file"]')['data-dnd-zone-id']
   end
 
   def test_file_input_has_correct_id
-    assert_equal 'user_highlights', default_field.at_css('input[type="file"]')['id']
+    assert_equal 'user_highlights', default_highlights_field.at_css('input[type="file"]')['id']
   end
 
   def test_file_input_is_hidden
-    assert_equal 'display:none;', default_field.at_css('input[type="file"]')['style']
+    assert_equal 'display:none;', default_highlights_field.at_css('input[type="file"]')['style']
   end
 
-  def test_file_input_is_multiple
-    assert_equal 'multiple', default_field.at_css('input[type="file"]')['multiple']
+  def test_highlights_file_input_is_multiple
+    assert_equal 'multiple', default_highlights_field.at_css('input[type="file"]')['multiple']
+  end
+
+  def test_avatar_file_input_is_not_multiple
+    assert_nil default_avatar_field.at_css('input[type="file"]')['multiple']
   end
 
   def test_file_input_has_correct_name
-    assert_equal 'user[highlights][]', default_field.at_css('input[type="file"]')['name']
+    assert_equal 'user[highlights][]',
+                 default_highlights_field.at_css('input[type="file"]')['name']
   end
 
   def test_it_accepts_a_custom_content_string
