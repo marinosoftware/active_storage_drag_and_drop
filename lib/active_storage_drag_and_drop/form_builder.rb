@@ -61,33 +61,53 @@ module ActiveStorageDragAndDrop
     # @param (see #drag_and_drop_file_field)
     # @option (see #drag_and_drop_file_field)
     # @return (see #drag_and_drop_file_field)
-    def drag_and_drop_file_field_string(method, content = nil, options = {})
-      ref = "#{object_name}_#{method}"
+    def drag_and_drop_file_field_string(method, content = nil, param_options = {})
+      ref     = "#{object_name}_#{method}"
       content = [content]
+      options = file_field_options(method, param_options)
+
       content << tag.div(id: "asdndz-#{ref}__icon-container")
-      content << file_field(method, file_field_options(method, options))
-      content += unpersisted_attachment_fields(method)
+      content << file_field(method, options)
+      content += unpersisted_attachment_fields(method, options[:multiple])
       content_tag :label, safe_join(content), class: 'asdndzone', id: "asdndz-#{ref}",
                                               'data-dnd-input-id': ref
     end
 
-    # Checks for unpersisted file attachments (e.g. left over after a failed validation) and
-    # returns an array of tags used to pre-populate the the dropzone with tags queueing those files
-    # for attachment at the next form submission.
+    # returns an array of tags used to pre-populate the the dropzone with tags queueing unpersisted
+    # file attachments for attachment at the next form submission.
     #
     # @author Ian Grant
     # @param [Symbol] method The attribute on the target model to attach the files to.
+    # @param [Boolean] multiple Whether the dropzone should accept multiple attachments or not.
     # @return [Array] An array of hidden field tags for each unpersisted file attachment.
-    def unpersisted_attachment_fields(method)
-      attachments = @object.send(method).reject(&:persisted?)
-      attachments.map.with_index do |blob, idx|
+    def unpersisted_attachment_fields(method, multiple)
+      unpersisted_attachments(method).map.with_index do |blob, idx|
         hidden_field method,
-                     mutiple: :multiple, value: blob.signed_id,
-                     name: "#{object_name}[#{method}][]",
+                     mutiple: multiple ? :multiple : false,
+                     value: blob.signed_id,
+                     name: "#{object_name}[#{method}]#{'[]' if multiple}",
                      data: {
                        direct_upload_id: idx, uploaded_file_name: blob.filename,
                        icon_container_id: "asdndz-#{object_name}_#{method}__icon-container"
                      }
+      end
+    end
+
+    # Returns an array of all unpersisted file attachments (e.g. left over after a failed
+    # validation)
+    #
+    # @author Ian Grant
+    # @param [Symbol] method The attribute on the target model to attach the files to.
+    # @return [Array] An array of unpersisted file attachments.
+    def unpersisted_attachments(method)
+      as_relation = @object.send(method)
+      if as_relation.is_a?(ActiveStorage::Attached::One) && as_relation.attachment.present? &&
+         !@object.persisted?
+        [as_relation.attachment]
+      elsif as_relation.is_a?(ActiveStorage::Attached::Many)
+        as_relation.reject(&:persisted?)
+      else
+        []
       end
     end
 
@@ -98,7 +118,7 @@ module ActiveStorageDragAndDrop
     # @return [Hash] The default options  for the file field
     def default_file_field_options(method)
       {
-        multiple: true,
+        multiple: @object.send(method).is_a?(ActiveStorage::Attached::Many),
         direct_upload: true,
         style: 'display:none;',
         data: {

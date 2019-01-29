@@ -64,17 +64,29 @@ export function createUploader (input, file) {
       iconContainer: input.dataset.iconContainerId,
       error: error
     }
-    let event = dispatchEvent(input, 'dnd-upload:error', { detail })
-    if (!event.defaultPrevented) {
-      const { error, iconContainer } = event.detail
-      fileUploadUIPainter(iconContainer, 'error', file.name, true)
-      const element = document.getElementById(`direct-upload-error`)
-      element.classList.add('direct-upload--error')
-      element.setAttribute('title', error)
-    }
-    return event
+    return dispatchErrorWithoutAttachment(input, detail)
   }
+  if (!input.multiple) { removeAttachedFiles(input) }
   uploaders.push(new DragAndDropUploadController(input, file))
+}
+
+function removeAttachedFiles (input) {
+  input.closest('label.asdndzone').querySelectorAll('[data-direct-upload-id]').forEach(element => {
+    element.remove()
+  })
+  uploaders.splice(0, uploaders.length)
+}
+
+function dispatchErrorWithoutAttachment (input, detail) {
+  let event = dispatchEvent(input, 'dnd-upload:error', { detail })
+  if (!event.defaultPrevented) {
+    const { error, iconContainer, file } = event.detail
+    fileUploadUIPainter(iconContainer, 'error', file.name, true)
+    const element = document.getElementById(`direct-upload-error`)
+    element.classList.add('direct-upload--error')
+    element.setAttribute('title', error)
+  }
+  return event
 }
 
 function validateUploader (input, file) {
