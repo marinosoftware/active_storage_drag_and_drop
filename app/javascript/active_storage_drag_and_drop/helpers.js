@@ -10,18 +10,21 @@ export function dispatchEvent (element, type, eventInit = {}) {
 export function defaultErrorEventUI (event) {
   if (!event.defaultPrevented) {
     const { id, error } = event.detail
-    const element = document.getElementById(`direct-upload-${id}`)
-    element.classList.add('direct-upload--error')
-    element.setAttribute('title', error)
+    if (typeof id !== 'undefined') {
+      const element = document.getElementById(`direct-upload-${id}`)
+      element.setAttribute('title', error).classList.add('direct-upload--error')
+    }
   }
 }
 
 export function defaultEndEventUI (event) {
   if (!event.defaultPrevented) {
     const { id } = event.detail
-    const element = document.getElementById(`direct-upload-${id}`)
-    element.classList.remove('direct-upload--pending')
-    element.classList.add('direct-upload--complete')
+    if (typeof id !== 'undefined') {
+      const classes = document.getElementById(`direct-upload-${id}`).classList
+      classes.remove('direct-upload--pending')
+      classes.add('direct-upload--complete')
+    }
   }
 }
 
