@@ -10,10 +10,11 @@
 Provides a form helper to make it easy to make drag and drop file upload fields that work with
 Rails' [ActiveStorage](https://github.com/rails/rails/tree/master/activestorage).
 
+![Demo](./demo.webp)
+
 ## Installation
 
 Add this line to your application's Gemfile:
-
 ```ruby
 gem 'active_storage_drag_and_drop'
 ```
@@ -31,10 +32,9 @@ Include `active_stroage_drag_and_drop.js` in your application's JavaScript bundl
 //= require active_storage_drag_and_drop
 ```
 
-You may also optionally include some basic styles in your application css:
+And include the styles in your application css:
 ```css
 /*
- *= require direct_uploads
  *= require active_storage_drag_and_drop
  */
 ```
@@ -71,8 +71,6 @@ The content of the dropzone can also be passed as a block of ERB or HAML:
   %i.far.fa-images
   Drag images here!
 ```
-
-
 
 ### Strong Parameters
 

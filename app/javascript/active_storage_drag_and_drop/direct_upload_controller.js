@@ -14,7 +14,7 @@ export class DragAndDropUploadController {
     if (!event.defaultPrevented) {
       const { detail } = event
       const { id, file, iconContainer } = detail
-      fileUploadUIPainter(iconContainer, id, file.name, false)
+      fileUploadUIPainter(iconContainer, id, file, false)
     }
   }
 

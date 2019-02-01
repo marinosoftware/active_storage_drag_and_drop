@@ -62,19 +62,19 @@ function handleFormSubmissionEvent (event) {
 }
 
 function addAttachedFileIcons () {
-  document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file-name]").forEach(uploadedFile => {
+  document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file]").forEach(uploadedFile => {
     const dataset = uploadedFile.dataset
     let iconContainer = document.getElementById(dataset.iconContainerId)
     let detail = {
       id: dataset.directUploadId,
-      fileName: dataset.uploadedFileName,
+      file: JSON.parse(dataset.uploadedFile),
       iconContainer: iconContainer
     }
     let event = helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
     if (!event.defaultPrevented) {
       const { detail } = event
-      const { id, fileName, iconContainer } = detail
-      helpers.fileUploadUIPainter(iconContainer, id, fileName, true)
+      const { id, file, iconContainer } = detail
+      helpers.fileUploadUIPainter(iconContainer, id, file, true)
     }
   })
 }

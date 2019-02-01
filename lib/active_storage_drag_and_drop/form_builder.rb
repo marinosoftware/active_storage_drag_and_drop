@@ -63,10 +63,11 @@ module ActiveStorageDragAndDrop
     # @return (see #drag_and_drop_file_field)
     def drag_and_drop_file_field_string(method, content = nil, param_options = {})
       ref     = "#{object_name}_#{method}"
-      content = [content]
       options = file_field_options(method, param_options)
+      content ||= default_content
+      content = [content]
 
-      content << tag.div(id: "asdndz-#{ref}__icon-container")
+      content << tag.div(id: "asdndz-#{ref}__icon-container", class: 'asdndz__icon-container')
       content << file_field(method, options)
       content += unpersisted_attachment_fields(method, options[:multiple])
       content_tag :label, safe_join(content), class: 'asdndzone', id: "asdndz-#{ref}",
@@ -81,13 +82,13 @@ module ActiveStorageDragAndDrop
     # @param [Boolean] multiple Whether the dropzone should accept multiple attachments or not.
     # @return [Array] An array of hidden field tags for each unpersisted file attachment.
     def unpersisted_attachment_fields(method, multiple)
-      unpersisted_attachments(method).map.with_index do |blob, idx|
+      unpersisted_attachments(method).map.with_index do |attachment, idx|
         hidden_field method,
-                     mutiple: multiple ? :multiple : false,
-                     value: blob.signed_id,
+                     mutiple: multiple ? :multiple : false, value: attachment.signed_id,
                      name: "#{object_name}[#{method}]#{'[]' if multiple}",
                      data: {
-                       direct_upload_id: idx, uploaded_file_name: blob.filename,
+                       direct_upload_id: idx,
+                       uploaded_file: { name: attachment.filename, size: attachment.byte_size },
                        icon_container_id: "asdndz-#{object_name}_#{method}__icon-container"
                      }
       end
@@ -127,6 +128,16 @@ module ActiveStorageDragAndDrop
           icon_container_id: "asdndz-#{object_name}_#{method}__icon-container"
         }
       }
+    end
+
+    # The default content to populate the drag and drop zone with if there is no content supplied
+    # in the parameters or passed as a block.
+    #
+    # @author Ian Grant
+    # @since 1.0.0
+    # @return [String] "Drag & Drop or  &lt;span class='asdndz-highlight'&gt;Browse&lt;/span&gt;"
+    def default_content
+      safe_join(['Drag & Drop or ', tag.span('Browse', class: 'asdndz-highlight')])
     end
 
     # Merges the user provided options with the default options overwriting the defaults to

@@ -35,9 +35,9 @@ USERS_NEW_TEMPLATE = <<-HTML
     <%= form.drag_and_drop_file_field(:avatar) do %>
       <strong>Drag and Drop</strong> avatar here or <strong>click to browse</strong>
     <% end %>
-    <%= form.drag_and_drop_file_field(:highlights) do %>
-      <strong>Drag and Drop</strong> files here or <strong>click to browse</strong>
-    <% end %>
+    <br/>
+    <%= form.drag_and_drop_file_field(:highlights) %>
+    <br/>
     <%= form.submit %>
   <% end %>
 HTML

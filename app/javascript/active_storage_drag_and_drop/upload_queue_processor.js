@@ -81,7 +81,7 @@ function dispatchErrorWithoutAttachment (input, detail) {
   let event = dispatchEvent(input, 'dnd-upload:error', { detail })
   if (!event.defaultPrevented) {
     const { error, iconContainer, file } = event.detail
-    fileUploadUIPainter(iconContainer, 'error', file.name, true)
+    fileUploadUIPainter(iconContainer, 'error', file, true)
     const element = document.getElementById(`direct-upload-error`)
     element.classList.add('direct-upload--error')
     element.setAttribute('title', error)

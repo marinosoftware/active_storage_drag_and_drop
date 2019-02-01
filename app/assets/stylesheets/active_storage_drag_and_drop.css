@@ -1,9 +1,87 @@
-.asdndzone {
-  min-height: 100px;
-  border: 2px solid rgba(0, 0, 0, 0.3);
-  background: rgba(0,0,0,0.1);
-  padding-top: 60px;
-  text-align: center;
+label.asdndzone * {
+  box-sizing: border-box;
+}
+
+label.asdndzone {
+  box-sizing: border-box;
+  display: block;
+  border: 3px solid #c8ce3e;
+  border-radius: 6px;
+  min-height: 220px;
+  max-width: 310px;
   width: 100%;
+  padding: 99px 20px 20px;
+  text-align: center;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 21px;
+  letter-spacing: 0.6px;
+}
+
+label.asdndzone .asdndz-highlight {
+  color: #8dc63f;
+}
+
+label.asdndzone .asdndz__icon-container {
+  text-align: left;
+}
+
+label.asdndzone .direct-upload {
   display: inline-block;
+  position: relative;
+  border-radius: 10px;
+  height: 18px;
+  min-width: 126px;
+  background-color: #f5f5f5;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: #212121;
+  margin-top: 8px;
+  padding: 5px 10px;
+}
+
+label.asdndzone .direct-upload__complete {
+  background-color: #c8ce3e;
+}
+
+label.asdndzone .direct-upload__progress {
+  opacity: 0.57;
+  background-color: #c8ce3e;
+  border-radius: 10px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  transition: width 120ms ease-out, opacity 60ms 60ms ease-in;
+  transform: translate3d(0, 0, 0);
+}
+
+label.asdndzone .direct-upload__remove {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 13px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #212121;
+}
+
+label.asdndzone .direct-upload__filename {
+  position: relative;
+  max-width: 190px;
+  overflow: hidden;
+  display: inline-block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+label.asdndzone .direct-upload__filesize {
+  position: relative;
+  float: right;
+  font-size: 10px;
+  letter-spacing: 0.1px;
+  color: #707e87;
+  padding-left: 7px;
 }

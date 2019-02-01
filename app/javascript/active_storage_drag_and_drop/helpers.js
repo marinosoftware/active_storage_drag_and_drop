@@ -48,15 +48,24 @@ export function getClassnameFromHeirarchy (element, classname) {
   }
 }
 
-export function fileUploadUIPainter (iconContainer, id, filename, complete) {
+export function fileUploadUIPainter (iconContainer, id, file, complete) {
   // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
   var cname = (complete ? 'complete' : 'pending')
   var progress = (complete ? 100 : 0)
   iconContainer.insertAdjacentHTML('beforeend', `
+  <div data-direct-upload-id="${id}">
     <div id="direct-upload-${id}" class="direct-upload direct-upload--${cname}" data-direct-upload-id="${id}">
       <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: ${progress}%"></div>
-      <span class="direct-upload__filename">${filename}</span>
+      <span class="direct-upload__filename">${file.name}</span>
+      <span class="direct-upload__filesize">${fileSizeSI(file.size)}</span>
     </div>
-    <a href='remove' class='direct-upload__remove' data-dnd-delete='true' data-direct-upload-id="${id}">x</a>
+    <a href='remove' class='direct-upload__remove' data-dnd-delete='true' data-direct-upload-id="${id}">X</a>
+  </div>
   `)
+}
+
+function fileSizeSI (bytes) {
+  var e = Math.log(bytes) / Math.log(1000) | 0
+  var size = (bytes / Math.pow(1000, e) + 0.5) | 0
+  return size + (e ? 'kMGTPEZY'[--e] + 'B' : ' Bytes')
 }
