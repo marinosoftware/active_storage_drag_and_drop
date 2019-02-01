@@ -12,6 +12,18 @@ Rails' [ActiveStorage](https://github.com/rails/rails/tree/master/activestorage)
 
 ![Demo](./demo.webp)
 
+## Table of Contents
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Strong Parameters](#strong-parameters)
+    - [Options]('#options')
+    - [Validation](#validation)
+    - [JavaScript Events](#javascript-events)
+  - [Development](#development)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Code of Conduct](#code-of-conduct)
+
 ## Installation
 
 Add this line to your application's Gemfile:
