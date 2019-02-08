@@ -1,3 +1,5 @@
+// @flow
+
 import { start } from './ujs'
 
 export { start }

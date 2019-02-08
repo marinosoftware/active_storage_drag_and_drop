@@ -1,3 +1,5 @@
+// @flow
+
 import { UploadQueueProcessor, uploaders, createUploader } from './upload_queue_processor'
 import * as helpers from './helpers'
 
@@ -8,17 +10,18 @@ function didSubmitForm (event) {
   handleFormSubmissionEvent(event)
 }
 
-function didSubmitRemoteElement (event) {
-  if (event.target.tagName === 'FORM') {
-    handleFormSubmissionEvent(event)
-  }
+function didSubmitRemoteElement (event: Event) {
+  if (event.target instanceof Element && event.target.tagName === 'FORM') handleFormSubmissionEvent(event)
 }
 
-function processUploadQueue (event) {
+function processUploadQueue (event: Event) {
   const form = event.target
-  const { callback } = event.detail
+  if (!(form instanceof HTMLFormElement && event instanceof CustomEvent)) return
+
   const nextUpload = new UploadQueueProcessor(form)
-  if (nextUpload.current_uploaders.length > 0) {
+  const { callback } = event.detail
+
+  if (nextUpload.currentUploaders.length > 0) {
     nextUpload.start(error => {
       if (error) {
         callback(error)
@@ -26,94 +29,97 @@ function processUploadQueue (event) {
         callback()
       }
     })
-  } else {
-    callback()
-  }
+  } else { callback() }
 }
 
 function handleFormSubmissionEvent (event) {
   if (formSubmitted) { return }
+
   formSubmitted = true
   const form = event.target
+  if (!(form instanceof HTMLFormElement)) return
+
   const nextUpload = new UploadQueueProcessor(form)
   // if the upload processor has no dnd file inputs, then we let the event happen naturally
   // if it DOES have dnd file inputs, then we have to process our queue first and then submit the form
-  if (nextUpload.current_uploaders.length > 0) {
-    // inputs.forEach(disable)
-    event.preventDefault()
-    nextUpload.start(error => {
-      if (error) {
-        // inputs.forEach(enable)
-      } else {
-        form.submit()
-        // The original ActiveStorage DirectUpload system did this action using
-        // input.click(), but doing that either makes the form submission event
-        // happen multiple times, or the browser seems to block the input.click()
-        // event completely, because it's not a trusted 'as a result of a mouse
-        // click' event.
-        // HOWEVER
-        // form.submit() doesn't trigger to any UJS submission events. This
-        // results in remote forms being submitted locally whenever there's a
-        // dnd file to upload.  Instead we use Rails.fire(element, 'submit')
-        // Rails.fire(form, 'submit')
-      }
-    })
-  }
+  if (nextUpload.currentUploaders.length === 0) return
+
+  // inputs.forEach(disable)
+  event.preventDefault()
+  nextUpload.start(error => {
+    if (!error) form.submit()
+    // The original ActiveStorage DirectUpload system did this action using
+    // input.click(), but doing that either makes the form submission event
+    // happen multiple times, or the browser seems to block the input.click()
+    // event completely, because it's not a trusted 'as a result of a mouse
+    // click' event.
+    // HOWEVER
+    // form.submit() doesn't trigger to any UJS submission events. This
+    // results in remote forms being submitted locally whenever there's a
+    // dnd file to upload.  Instead we use Rails.fire(element, 'submit')
+    // Rails.fire(form, 'submit')
+  })
 }
 
 function addAttachedFileIcons () {
   document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file]").forEach(uploadedFile => {
     const dataset = uploadedFile.dataset
-    let iconContainer = document.getElementById(dataset.iconContainerId)
-    let detail = {
+    const detail = {
       id: dataset.directUploadId,
       file: JSON.parse(dataset.uploadedFile),
-      iconContainer: iconContainer
+      iconContainer: document.getElementById(dataset.iconContainerId)
     }
-    let event = helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
-    if (!event.defaultPrevented) {
-      const { detail } = event
-      const { id, file, iconContainer } = detail
-      helpers.fileUploadUIPainter(iconContainer, id, file, true)
-    }
+    const event = helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
+    if (event.defaultPrevented) return
+
+    const { id, file, iconContainer } = event.detail
+    helpers.fileUploadUIPainter(iconContainer, id, file, true)
   })
 }
 
-function createUploadersForFileInput (event) {
-  if (event.target.type === 'file' && event.target.dataset.dnd === 'true') {
-    const input = event.target
-    Array.from(input.files).forEach(file => createUploader(input, file))
-    input.value = null
-  }
+function createUploadersForFileInput (event: Event) {
+  const input = event.target
+  if (!(input instanceof HTMLInputElement) || input.type !== 'file' || input.dataset.dnd !== 'true') return
+
+  Array.from(input.files).forEach(file => createUploader(input, file))
+  input.value = ''
 }
 
-function preventDragover (event) {
-  if (helpers.hasClassnameInHeirarchy(event.target, 'asdndzone')) {
-    event.preventDefault()
-  }
+function preventDragover (event: DragEvent) {
+  const target = event.target
+  if (!(target instanceof Element)) return
+
+  if (helpers.hasClassnameInHeirarchy(target, 'asdndzone')) event.preventDefault()
 }
 
-function createUploadersForDroppedFiles (event) {
-  let asdndz = helpers.getClassnameFromHeirarchy(event.target, 'asdndzone')
-  if (asdndz) {
-    event.preventDefault()
-    // get the input associated with this dndz
-    const input = document.getElementById(asdndz.dataset.dndInputId)
-    Array.from(event.dataTransfer.files).forEach(file => createUploader(input, file))
-  }
+function createUploadersForDroppedFiles (event: DragEvent) {
+  const { target, dataTransfer } = event
+  if (!(target instanceof Element && dataTransfer instanceof DataTransfer)) return
+
+  const asdndz = helpers.getClassnameFromHeirarchy(target, 'asdndzone')
+  if (!(asdndz instanceof HTMLElement)) return
+
+  // get the input associated with this dndz
+  const input = document.getElementById(asdndz.dataset.dndInputId)
+  if (!(input instanceof HTMLInputElement)) return
+
+  event.preventDefault()
+  Array.from(dataTransfer.files).forEach(file => createUploader(input, file))
 }
 
-function removeFileFromQueue (event) {
-  if (event.target.dataset.dndDelete === 'true' && event.target.hasAttribute('data-direct-upload-id')) {
-    event.preventDefault()
-    document.querySelectorAll('[data-direct-upload-id="' + event.target.dataset.directUploadId + '"]').forEach(element => {
-      element.remove()
-    })
-    for (var i = 0; i < uploaders.length; i++) {
-      if (uploaders[i].upload.id === event.target.dataset.directUploadId) {
-        uploaders.splice(i, 1)
-        break
-      }
+function removeFileFromQueue (event: Event) {
+  const target = event.target
+  if (!(target instanceof HTMLElement)) return
+
+  if (target.dataset.dndDelete !== 'true' || !target.hasAttribute('data-direct-upload-id')) return
+  event.preventDefault()
+  document.querySelectorAll('[data-direct-upload-id="' + target.dataset.directUploadId + '"]').forEach(element => {
+    element.remove()
+  })
+  for (var i = 0; i < uploaders.length; i++) {
+    if (uploaders[i].upload.id === target.dataset.directUploadId) {
+      uploaders.splice(i, 1)
+      break
     }
   }
 }

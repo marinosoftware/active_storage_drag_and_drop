@@ -73,7 +73,7 @@ Call the method `drag_and_drop_file_field` on your model's form:
   = form.submit
 ```
 The first parameter is a symbol representing the method of the ActiveStorage attachment and an
-optional second parameter sets the the text on the drag and drop zone.
+optional second parameter sets the text on the drag and drop zone.
 ```ruby
 form.drag_and_drop_file_field :images, 'Drag and drop images here!'
 ```
@@ -137,7 +137,7 @@ To override the default behaviour of any of these events catch them with an even
 `preventDefault()` on the event:
 ```javascript
 document.addEventListener('dnd-upload:error', function (event) {
-  # do something...
+  # do something…
   event.preventDefault()
 })
 ```
@@ -147,9 +147,9 @@ To asynchronously trigger uploading without form submission dispatch a
 ```javascript
 var callback = function(error) {
   if (error) {
-    // ...handle error...
+    // …handle error…
   } else {
-    // ...do your stuff
+    // …do your stuff
   }
 }
 
@@ -165,13 +165,12 @@ Install yarn to manage js dependencies. After checking out the repo, run `bin/se
 dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an
 interactive prompt that will allow you to experiment.
 
-After making a change to the javascript in `app/javascript` compile it to
-`app/assets/javascripts/active_storage_drag_and_drop.js` by running
-`yarn webpack`.
+Use `yarn dev` to build JavaScript files automatically on change. Use with
+`gem 'active_storage_drag_and_drop', path: [local-gem-repo]` to develop and debug the gem in place
+in a rails app.
 
-Use `yarn webpack --mode=development --watch` to build files
-automatically on change.  Use with `gem 'active_storage_drag_and_drop', path: [local-gem-repo]` to
-develop and debug the gem in place in a rails app.
+After making changes to JavaScript run `yarn build` before committing changes to transpile the
+JavaScript for production.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new
 version, update the version number in `version.rb`, and then run `bundle exec rake release`, which

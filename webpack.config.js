@@ -1,6 +1,8 @@
 const path = require('path')
 
 module.exports = {
+  mode: 'development',
+
   entry: {
     'active_storage_drag_and_drop': path.resolve(__dirname, 'app/javascript/active_storage_drag_and_drop/index.js')
   },
