@@ -87,16 +87,14 @@ function createUploadersForFileInput (event: Event) {
 
 function preventDragover (event: DragEvent) {
   const target = event.target
-  if (!(target instanceof Element)) return
-
-  if (helpers.hasClassnameInHeirarchy(target, 'asdndzone')) event.preventDefault()
+  if (target instanceof Element && target.closest('.asdndzone')) event.preventDefault()
 }
 
 function createUploadersForDroppedFiles (event: DragEvent) {
   const { target, dataTransfer } = event
   if (!(target instanceof Element && dataTransfer instanceof DataTransfer)) return
 
-  const asdndz = helpers.getClassnameFromHeirarchy(target, 'asdndzone')
+  const asdndz = target.closest('.asdndzone')
   if (!(asdndz instanceof HTMLElement)) return
 
   // get the input associated with this dndz

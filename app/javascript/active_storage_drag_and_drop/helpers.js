@@ -31,22 +31,6 @@ export function defaultEndEventUI (event: CustomEvent) {
   classes.add('direct-upload--complete')
 }
 
-export function hasClassnameInHeirarchy (element: Element, classname: string) {
-  if (element.classList.contains(classname)) return true
-  else {
-    const parent = element.parentElement
-    if (parent) { return hasClassnameInHeirarchy(parent, classname) }
-  }
-}
-
-export function getClassnameFromHeirarchy (element: Element, classname: string) {
-  if (element.classList.contains(classname)) return element
-  else {
-    const parent = element.parentElement
-    if (parent) { return getClassnameFromHeirarchy(parent, classname) }
-  }
-}
-
 export function fileUploadUIPainter (iconContainer: Element, id: string | number, file: File, complete: boolean) {
   // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
   const cname = (complete ? 'complete' : 'pending')
