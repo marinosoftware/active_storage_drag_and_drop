@@ -2,9 +2,8 @@
 
 export function dispatchEvent (element: Element, type: string,
   eventInit: { bubbles?: boolean, cancelable?: boolean, detail: {} } = {}) {
-  const { bubbles, cancelable, detail } = eventInit
-  const event = document.createEvent('CustomEvent')
-  event.initCustomEvent(type, bubbles || true, cancelable || true, detail || {})
+  const { bubbles = true, cancelable = true, detail = {} } = eventInit
+  const event = new CustomEvent(type, { bubbles, cancelable, detail })
   element.dispatchEvent(event)
   return event
 }
