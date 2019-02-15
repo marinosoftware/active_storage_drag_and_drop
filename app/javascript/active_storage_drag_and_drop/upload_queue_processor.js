@@ -1,7 +1,7 @@
 // @flow
 
 import { dispatchEvent, defaultErrorEventUI, defaultEndEventUI, fileUploadUIPainter, fileSizeSI } from './helpers'
-import { DragAndDropUploadController } from './direct_upload_controller'
+import { DragAndDropUploadController } from './drag_and_drop_upload_controller'
 export const uploaders = []
 
 class ValidationError extends Error {
