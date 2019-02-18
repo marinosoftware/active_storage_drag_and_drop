@@ -4,3 +4,5 @@ extends:
   - plugin:flowtype/recommended
 plugins:
   - flowtype
+env:
+  browser: true
