@@ -56,9 +56,9 @@ export class DragAndDropUploadController {
 
   dispatch (name: string,
     detail: { file?: File, id?: number, iconContainer?: Element, error?: Error } = {}) {
-    detail.file = detail.file || this.file
-    detail.id = detail.id || this.upload.id
-    detail.iconContainer = detail.iconContainer || this.iconContainer
+    detail.file = this.file
+    detail.id = this.upload.id
+    detail.iconContainer = this.iconContainer
     return dispatchEvent(this.input, `${eventFamily}:${name}`, { detail })
   }
 
