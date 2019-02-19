@@ -16,10 +16,11 @@ function didSubmitRemoteElement (event: Event) {
 
 function processUploadQueue (event: Event) {
   const form = event.target
-  if (!(form instanceof HTMLFormElement && event instanceof CustomEvent)) return
+  if (!(form instanceof HTMLFormElement)) return
 
-  const nextUpload = new UploadQueueProcessor(form)
+  // $FlowFixMe
   const { callback } = event.detail
+  const nextUpload = new UploadQueueProcessor(form)
 
   if (nextUpload.currentUploaders.length > 0) {
     nextUpload.start(error => {
