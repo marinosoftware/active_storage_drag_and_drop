@@ -1,6 +1,7 @@
 // @flow
 
-import { dispatchEvent, defaultErrorEventUI, defaultEndEventUI, fileUploadUIPainter, fileSizeSI } from './helpers'
+import { dispatchEvent, fileUploadUIPainter, fileSizeSI } from './helpers'
+import { endUI, errorUI } from './default_ui'
 import { DragAndDropUploadController } from './drag_and_drop_upload_controller'
 export const uploaders = []
 
@@ -36,7 +37,7 @@ export class UploadQueueProcessor {
       } else {
         callback()
         const event = this.dispatch('end')
-        defaultEndEventUI(event)
+        endUI(event)
       }
     }
     this.dispatch('start')
@@ -49,7 +50,7 @@ export class UploadQueueProcessor {
 
   dispatchError (error: Error) {
     const event = this.dispatch('error', { error })
-    defaultErrorEventUI(event)
+    errorUI(event)
   }
 }
 

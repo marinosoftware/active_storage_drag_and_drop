@@ -8,29 +8,6 @@ export function dispatchEvent (element: Element, type: string,
   return event
 }
 
-export function defaultErrorEventUI (event: CustomEvent) {
-  const { id, error } = event.detail
-  if (!id || event.defaultPrevented) return
-
-  const element = document.getElementById(`direct-upload-${id}`)
-  if (!element) return
-
-  element.setAttribute('title', error)
-  element.classList.add('direct-upload--error')
-}
-
-export function defaultEndEventUI (event: CustomEvent) {
-  const { id } = event.detail
-  if (!id || event.defaultPrevented) return
-
-  const element = document.getElementById(`direct-upload-${id}`)
-  if (!element) return
-
-  const classes = element.classList
-  classes.remove('direct-upload--pending')
-  classes.add('direct-upload--complete')
-}
-
 export function fileUploadUIPainter (iconContainer: Element, id: string | number, file: File, complete: boolean) {
   // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
   const cname = (complete ? 'complete' : 'pending')
