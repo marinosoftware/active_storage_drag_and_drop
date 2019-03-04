@@ -1,9 +1,16 @@
 // @flow
 
-export function errorUI (event: CustomEvent) {
-  const { id, error } = event.detail
-  if (!id || event.defaultPrevented) return
+import { fileSizeSI } from './helpers'
 
+export function errorUI (event: CustomEvent) {
+  let { id } = event.detail
+  const { error, iconContainer, file } = event.detail
+  if (event.defaultPrevented) return
+
+  if (!id) {
+    fileUploadUIPainter(iconContainer, 'error', file, true)
+    id = 'error'
+  }
   const element = document.getElementById(`direct-upload-${id}`)
   if (!element) return
 
@@ -21,4 +28,42 @@ export function endUI (event: CustomEvent) {
   const classes = element.classList
   classes.remove('direct-upload--pending')
   classes.add('direct-upload--complete')
+}
+
+export function initializeUI (event: CustomEvent) {
+  if (event.defaultPrevented) return
+
+  const { id, file, iconContainer } = event.detail
+  fileUploadUIPainter(iconContainer, id, file, false)
+}
+
+export function progressUI (event: CustomEvent) {
+  if (event.defaultPrevented) return
+
+  const { id, progress } = event.detail
+  const progressElement = document.getElementById(`direct-upload-progress-${id}`)
+  if (progressElement) progressElement.style.width = `${progress}%`
+}
+
+export function placeholderUI (event: CustomEvent) {
+  if (event.defaultPrevented) return
+
+  const { id, file, iconContainer } = event.detail
+  fileUploadUIPainter(iconContainer, id, file, true)
+}
+
+export function fileUploadUIPainter (iconContainer: Element, id: string | number, file: File, complete: boolean) {
+  // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
+  const cname = (complete ? 'complete' : 'pending')
+  const progress = (complete ? 100 : 0)
+  iconContainer.insertAdjacentHTML('beforeend', `
+  <div data-direct-upload-id="${id}">
+    <div id="direct-upload-${id}" class="direct-upload direct-upload--${cname}" data-direct-upload-id="${id}">
+      <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: ${progress}%"></div>
+      <span class="direct-upload__filename">${file.name}</span>
+      <span class="direct-upload__filesize">${fileSizeSI(file.size)}</span>
+    </div>
+    <a href='remove' class='direct-upload__remove' data-dnd-delete='true' data-direct-upload-id="${id}">X</a>
+  </div>
+  `)
 }

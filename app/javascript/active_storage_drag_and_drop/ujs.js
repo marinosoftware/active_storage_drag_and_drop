@@ -1,6 +1,7 @@
 // @flow
 
 import { UploadQueueProcessor, uploaders, createUploader } from './upload_queue_processor'
+import { placeholderUI } from './default_ui'
 import * as helpers from './helpers'
 
 let started = false
@@ -71,10 +72,7 @@ function addAttachedFileIcons () {
       iconContainer: document.getElementById(dataset.iconContainerId)
     }
     const event = helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
-    if (event.defaultPrevented) return
-
-    const { id, file, iconContainer } = event.detail
-    helpers.fileUploadUIPainter(iconContainer, id, file, true)
+    placeholderUI(event)
   })
 }
 

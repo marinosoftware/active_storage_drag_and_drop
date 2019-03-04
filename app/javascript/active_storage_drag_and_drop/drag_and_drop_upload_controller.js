@@ -1,7 +1,7 @@
 // @flow
 
-import { dispatchEvent, fileUploadUIPainter } from './helpers'
-import { endUI, errorUI } from './default_ui'
+import { dispatchEvent } from './helpers'
+import { endUI, errorUI, initializeUI, progressUI } from './default_ui'
 import { DirectUpload } from 'activestorage'
 const eventFamily = 'dnd-upload'
 
@@ -25,11 +25,7 @@ export class DragAndDropUploadController {
     this.file = file
     this.upload = new DirectUpload(this.file, this.url, this)
     const event = this.dispatch('initialize')
-    if (!event.defaultPrevented) {
-      const { detail } = event
-      const { id, file, iconContainer } = detail
-      fileUploadUIPainter(iconContainer, id, file, false)
-    }
+    initializeUI(event)
   }
 
   start (callback: Function) {
@@ -83,10 +79,6 @@ export class DragAndDropUploadController {
     if (!progress) return
 
     const event = this.dispatch('progress', { progress })
-    if (!event.defaultPrevented) {
-      const { id, progress } = event.detail
-      const progressElement = document.getElementById(`direct-upload-progress-${id}`)
-      if (progressElement) progressElement.style.width = `${progress}%`
-    }
+    progressUI(event)
   }
 }

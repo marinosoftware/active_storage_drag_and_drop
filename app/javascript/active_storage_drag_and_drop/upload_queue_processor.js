@@ -1,6 +1,6 @@
 // @flow
 
-import { dispatchEvent, fileUploadUIPainter, fileSizeSI } from './helpers'
+import { dispatchEvent, fileSizeSI } from './helpers'
 import { endUI, errorUI } from './default_ui'
 import { DragAndDropUploadController } from './drag_and_drop_upload_controller'
 export const uploaders = []
@@ -81,16 +81,7 @@ function removeAttachedFiles (input: HTMLInputElement) {
 
 function dispatchErrorWithoutAttachment (input, detail) {
   const event = dispatchEvent(input, 'dnd-upload:error', { detail })
-  if (event.defaultPrevented) return event
-
-  const { error, iconContainer, file } = event.detail
-  fileUploadUIPainter(iconContainer, 'error', file, true)
-  const element = document.getElementById(`direct-upload-error`)
-  if (element) {
-    element.classList.add('direct-upload--error')
-    element.setAttribute('title', error)
-  }
-  return event
+  errorUI(event)
 }
 
 function validateUploader (input, file) {
