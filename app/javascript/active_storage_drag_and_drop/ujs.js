@@ -1,6 +1,6 @@
 // @flow
 
-import { UploadQueueProcessor, uploaders, createUploader } from './upload_queue_processor'
+import { DragAndDropUploadsController, uploaders, createUploader } from './drag_and_drop_uploads_controller'
 import { placeholderUI } from './default_ui'
 import * as helpers from './helpers'
 
@@ -21,10 +21,10 @@ function processUploadQueue (event: Event) {
 
   // $FlowFixMe
   const { callback } = event.detail
-  const nextUpload = new UploadQueueProcessor(form)
+  const uploadsController = new DragAndDropUploadsController(form)
 
-  if (nextUpload.currentUploaders.length > 0) {
-    nextUpload.start(error => {
+  if (uploadsController.currentUploaders.length > 0) {
+    uploadsController.start(error => {
       if (error) {
         callback(error)
       } else {
@@ -41,14 +41,14 @@ function handleFormSubmissionEvent (event) {
   const form = event.target
   if (!(form instanceof HTMLFormElement)) return
 
-  const nextUpload = new UploadQueueProcessor(form)
+  const uploadsController = new DragAndDropUploadsController(form)
   // if the upload processor has no dnd file inputs, then we let the event happen naturally
   // if it DOES have dnd file inputs, then we have to process our queue first and then submit the form
-  if (nextUpload.currentUploaders.length === 0) return
+  if (uploadsController.currentUploaders.length === 0) return
 
   // inputs.forEach(disable)
   event.preventDefault()
-  nextUpload.start(error => {
+  uploadsController.start(error => {
     if (!error) form.submit()
     // The original ActiveStorage DirectUpload system did this action using
     // input.click(), but doing that either makes the form submission event
