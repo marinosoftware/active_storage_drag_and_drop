@@ -29,6 +29,7 @@ export class DragAndDropUploadController {
   }
 
   start (callback: Function) {
+    this.dispatch('start')
     this.upload.create((error, blob) => {
       if (error) {
         // Handle the error

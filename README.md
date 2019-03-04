@@ -123,15 +123,17 @@ for the event and call `preventDefault()` on the event.
 
 | Event name | Event target | Event data (`event.detail`) | Description |
 | --- | --- | --- | --- |
-| `dnd-uploads:start` | `<form>` | None | A form containing files for direct upload fields was submitted. |
-| `dnd-upload:initialize` | `<input>` | `{id, file, iconContainer}` | Dispatched for every file after form submission. |
-| `dnd-upload:start` | `<input>` | `{id, file, iconContainer}` | A direct upload is starting. |
-| `dnd-upload:before-blob-request` | `<input>` | `{id, file, iconContainer, xhr}` | Before making a request to your application for direct upload metadata. |
-| `dnd-upload:before-storage-request` | `<input>` | `{id, file, iconContainer, xhr}` | Before making a request to store a file. |
-| `dnd-upload:progress` | `<input>` | `{id, file, iconContainer, progress}` | As requests to store files progress. |
-| `dnd-upload:error` | `<input>` | `{id, file, iconContainer, error}` | An error occurred. An `alert` will display unless this event is canceled. |
-| `dnd-upload:end` | `<input>` | `{id, file, iconContainer}` | A direct upload has ended. |
-| `dnd-uploads:end` | `<form>` | None | All direct uploads have ended. |
+| `dnd-uploads:start` | `<form>` | None | All of the uploads begin either by submission of the form or a call to processUploadQueue() |
+| `dnd-upload:initialize` | `<input>` | `{ id, file, iconContainer }` | Dispatched for every file before the UI elements representing the file are added to the dropzone, default can be prevented to add your own UI.  |
+| `dnd-upload:placeholder` | `<input>` | `{ id, file, iconContainer }` | Paints the UI for each file that has been queued for attachment but hasn't been attached yet (e.g. after a failed validation in the form) can be prevented as above. |
+| `dnd-upload:start` | `<input>` | `{ id, file, iconContainer }` | An upload is starting. |
+| `dnd-upload:before-blob-request` | `<input>` | `{ id, file, iconContainer, xhr }` | Before making a request to your application for upload metadata. |
+| `dnd-upload:before-storage-request` | `<input>` | `{ id, file, iconContainer, xhr }` | Before making a request to store a file. |
+| `dnd-upload:progress` | `<input>` | `{ id, file, iconContainer, progress }` | As requests to store files progress. |
+| `dnd-upload:error` | `<input>` | `{ id, file, iconContainer, error }` | An error occurred pertaining to a specific file. The default can be prevented to supply your own UI for errors. |
+| `dnd-upload:end` | `<input>` | `{ id, file, iconContainer }` | An upload has ended. Default can be prevented to supply your own UI for the end of an upload. |
+| `dnd-uploads:error` | `<form>` | `{ error }` | An error occurred unrelated to a specific file. The default can be prevented to supply your own UI for errors. |
+| `dnd-uploads:end` | `<form>` | None | All uploads have ended. |
 
 To override the default behaviour of any of these events catch them with an event listener and call
 `preventDefault()` on the event:
