@@ -1,8 +1,9 @@
 // @flow
 
-import { start } from './ujs'
+import { start, processUploadQueue } from './ujs'
+import { paintUploadIcon } from './default_ui'
 
-export { start }
+export { start, paintUploadIcon, processUploadQueue }
 
 function autostart () {
   start()

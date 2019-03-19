@@ -8,8 +8,8 @@ export function errorUI (event: CustomEvent) {
   if (event.defaultPrevented) return
 
   if (!id) {
-    fileUploadUIPainter(iconContainer, 'error', file, true)
     id = 'error'
+    window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, false)
   }
   const element = document.getElementById(`direct-upload-${id}`)
   if (!element) return
@@ -34,7 +34,7 @@ export function initializeUI (event: CustomEvent) {
   if (event.defaultPrevented) return
 
   const { id, file, iconContainer } = event.detail
-  fileUploadUIPainter(iconContainer, id, file, false)
+  window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, false)
 }
 
 export function progressUI (event: CustomEvent) {
@@ -49,16 +49,16 @@ export function placeholderUI (event: CustomEvent) {
   if (event.defaultPrevented) return
 
   const { id, file, iconContainer } = event.detail
-  fileUploadUIPainter(iconContainer, id, file, true)
+  window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, true)
 }
 
-export function fileUploadUIPainter (iconContainer: Element, id: string | number, file: File, complete: boolean) {
+export function paintUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
   // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
-  const cname = (complete ? 'complete' : 'pending')
+  const uploadStatus = (complete ? 'complete' : 'pending')
   const progress = (complete ? 100 : 0)
   iconContainer.insertAdjacentHTML('beforeend', `
   <div data-direct-upload-id="${id}">
-    <div id="direct-upload-${id}" class="direct-upload direct-upload--${cname}" data-direct-upload-id="${id}">
+    <div id="direct-upload-${id}" class="direct-upload direct-upload--${uploadStatus}" data-direct-upload-id="${id}">
       <div id="direct-upload-progress-${id}" class="direct-upload__progress" style="width: ${progress}%"></div>
       <span class="direct-upload__filename">${file.name}</span>
       <span class="direct-upload__filesize">${fileSizeSI(file.size)}</span>

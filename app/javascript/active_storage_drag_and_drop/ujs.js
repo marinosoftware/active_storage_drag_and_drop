@@ -1,66 +1,25 @@
 // @flow
 
-import { DragAndDropUploadsController, uploaders, createUploader } from './drag_and_drop_uploads_controller'
+import { DragAndDropFormController } from './drag_and_drop_form_controller'
 import { placeholderUI } from './default_ui'
-import * as helpers from './helpers'
+import { dispatchEvent } from './helpers'
 
 let started = false
 let formSubmitted = false
+const formControllers = new Map()
 
-function didSubmitForm (event) {
-  handleFormSubmissionEvent(event)
-}
-
-function didSubmitRemoteElement (event: Event) {
-  if (event.target instanceof Element && event.target.tagName === 'FORM') handleFormSubmissionEvent(event)
-}
-
-function processUploadQueue (event: Event) {
-  const form = event.target
-  if (!(form instanceof HTMLFormElement)) return
-
+function handleProcessUploadQueueEvent (event: Event) {
+  console.warn('WARNING! The processs-upload-queue event is deprecated. Call window.ActiveStorageDragAndDrop.processUploadQueue(form, callback) instead.')
   // $FlowFixMe
-  const { callback } = event.detail
-  const uploadsController = new DragAndDropUploadsController(form)
-
-  if (uploadsController.currentUploaders.length > 0) {
-    uploadsController.start(error => {
-      if (error) {
-        callback(error)
-      } else {
-        callback()
-      }
-    })
-  } else { callback() }
+  const callback = event.detail.callback
+  processUploadQueue(event.target, callback)
 }
 
-function handleFormSubmissionEvent (event) {
-  if (formSubmitted) { return }
-
-  formSubmitted = true
-  const form = event.target
-  if (!(form instanceof HTMLFormElement)) return
-
-  const uploadsController = new DragAndDropUploadsController(form)
-  // if the upload processor has no dnd file inputs, then we let the event happen naturally
-  // if it DOES have dnd file inputs, then we have to process our queue first and then submit the form
-  if (uploadsController.currentUploaders.length === 0) return
-
-  // inputs.forEach(disable)
-  event.preventDefault()
-  uploadsController.start(error => {
-    if (!error) form.submit()
-    // The original ActiveStorage DirectUpload system did this action using
-    // input.click(), but doing that either makes the form submission event
-    // happen multiple times, or the browser seems to block the input.click()
-    // event completely, because it's not a trusted 'as a result of a mouse
-    // click' event.
-    // HOWEVER
-    // form.submit() doesn't trigger to any UJS submission events. This
-    // results in remote forms being submitted locally whenever there's a
-    // dnd file to upload.  Instead we use Rails.fire(element, 'submit')
-    // Rails.fire(form, 'submit')
-  })
+export function processUploadQueue (form: any, callback: (error: Error | null) => void) {
+  const formController = findOrInitializeFormController(form)
+  if (formController.uploadControllers.length > 0) {
+    formController.start(error => { callback(error) })
+  } else { callback(null) }
 }
 
 function addAttachedFileIcons () {
@@ -71,17 +30,9 @@ function addAttachedFileIcons () {
       file: JSON.parse(dataset.uploadedFile),
       iconContainer: document.getElementById(dataset.iconContainerId)
     }
-    const event = helpers.dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
+    const event = dispatchEvent(uploadedFile, 'dnd-upload:placeholder', { detail })
     placeholderUI(event)
   })
-}
-
-function createUploadersForFileInput (event: Event) {
-  const input = event.target
-  if (!(input instanceof HTMLInputElement) || input.type !== 'file' || input.dataset.dnd !== 'true') return
-
-  Array.from(input.files).forEach(file => createUploader(input, file))
-  input.value = ''
 }
 
 function preventDragover (event: DragEvent) {
@@ -89,7 +40,38 @@ function preventDragover (event: DragEvent) {
   if (target instanceof Element && target.closest('.asdndzone')) event.preventDefault()
 }
 
-function createUploadersForDroppedFiles (event: DragEvent) {
+function handleSubmit (event: Event) {
+  if (formSubmitted) { return }
+
+  formSubmitted = true
+  const formController = findOrInitializeFormController(event.target)
+  if (formController.uploadControllers.length === 0) return
+
+  event.preventDefault()
+  formController.start(error => {
+    if (!error) formController.form.submit()
+  })
+}
+
+function removeFileFromQueue (event: Event) {
+  const target = event.target
+  if (!(target instanceof HTMLElement) || target.dataset.dndDelete !== 'true' || !target.dataset.directUploadId) return
+
+  event.preventDefault()
+  const formController = findOrInitializeFormController(target.closest('form'))
+  formController.unqueueUpload(target.dataset.directUploadId)
+}
+
+function queueUploadsForFileInput (event: Event) {
+  const input = event.target
+  if (!(input instanceof HTMLInputElement) || input.type !== 'file' || input.dataset.dnd !== 'true') return
+
+  const formController = findOrInitializeFormController(input.form)
+  Array.from(input.files).forEach(file => formController.queueUpload(input, file))
+  input.value = ''
+}
+
+function queueUploadsForDroppedFiles (event: DragEvent) {
   const { target, dataTransfer } = event
   if (!(target instanceof Element && dataTransfer instanceof DataTransfer)) return
 
@@ -98,40 +80,34 @@ function createUploadersForDroppedFiles (event: DragEvent) {
 
   // get the input associated with this dndz
   const input = document.getElementById(asdndz.dataset.dndInputId)
-  if (!(input instanceof HTMLInputElement)) return
+  if (!(input instanceof HTMLInputElement)) throw new Error('There is no file input element with the dnd-input-id specified on the drop zone.')
 
   event.preventDefault()
-  Array.from(dataTransfer.files).forEach(file => createUploader(input, file))
-}
-
-function removeFileFromQueue (event: Event) {
-  const target = event.target
-  if (!(target instanceof HTMLElement)) return
-
-  if (target.dataset.dndDelete !== 'true' || !target.hasAttribute('data-direct-upload-id')) return
-  event.preventDefault()
-  document.querySelectorAll('[data-direct-upload-id="' + target.dataset.directUploadId + '"]').forEach(element => {
-    element.remove()
-  })
-  for (var i = 0; i < uploaders.length; i++) {
-    if (uploaders[i].upload.id === target.dataset.directUploadId) {
-      uploaders.splice(i, 1)
-      break
-    }
-  }
+  const formController = findOrInitializeFormController(input.form)
+  Array.from(dataTransfer.files).forEach(file => formController.queueUpload(input, file))
 }
 
 export function start () {
   if (started) { return }
-  started = true
-  document.addEventListener('submit', didSubmitForm)
-  document.addEventListener('ajax:before', didSubmitRemoteElement)
-  document.addEventListener('dnd-uploads:process-upload-queue', processUploadQueue)
 
-  // input[type=file][data-dnd=true]
-  document.addEventListener('change', createUploadersForFileInput)
-  document.addEventListener('dragover', preventDragover)
-  document.addEventListener('drop', createUploadersForDroppedFiles)
+  started = true
+  document.addEventListener('change', queueUploadsForFileInput)
   document.addEventListener('click', removeFileFromQueue)
+  document.addEventListener('drop', queueUploadsForDroppedFiles, true)
+  document.addEventListener('submit', handleSubmit)
+  document.addEventListener('dnd-uploads:process-upload-queue', handleProcessUploadQueueEvent)
+  document.addEventListener('ajax:before', handleSubmit)
+  document.addEventListener('dragover', preventDragover)
   addAttachedFileIcons()
+}
+
+function findOrInitializeFormController (form) {
+  let formController = formControllers.get(form)
+  if (formController) return formController
+
+  if (!(form instanceof HTMLFormElement)) throw new Error('Can only initialize form controller with a form element.')
+
+  formController = new DragAndDropFormController(form)
+  formControllers.set(form, formController)
+  return formController
 }

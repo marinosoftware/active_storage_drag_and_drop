@@ -1,6 +1,6 @@
 // @flow
 
-import { dispatchEvent } from './helpers'
+import { dispatchEvent, fileSizeSI } from './helpers'
 import { endUI, errorUI, initializeUI, progressUI } from './default_ui'
 import { DirectUpload } from 'activestorage'
 const eventFamily = 'dnd-upload'
@@ -14,6 +14,7 @@ export class DragAndDropUploadController {
   upload: DirectUpload;
 
   constructor (input: HTMLInputElement, file: File) {
+    validate(input, file)
     const form = input.closest('form')
     const iconContainer = document.getElementById(input.dataset.iconContainerId)
     if (!(form instanceof HTMLFormElement && iconContainer)) return
@@ -81,5 +82,22 @@ export class DragAndDropUploadController {
 
     const event = this.dispatch('progress', { progress })
     progressUI(event)
+  }
+}
+
+class ValidationError extends Error {
+  constructor (...args) {
+    super(...args)
+    Error.captureStackTrace(this, ValidationError)
+  }
+}
+
+function validate (input, file) {
+  const sizeLimit = parseInt(input.getAttribute('size_limit'))
+  const accept = input.getAttribute('accept')
+  if (accept && !accept.split(', ').includes(file.type)) {
+    throw new ValidationError('Invalid filetype')
+  } else if (sizeLimit && file.size > sizeLimit) {
+    throw new ValidationError(`File too large. Can be no larger than ${fileSizeSI(sizeLimit)}`)
   }
 }

@@ -144,8 +144,9 @@ document.addEventListener('dnd-upload:error', function (event) {
 })
 ```
 
-To asynchronously trigger uploading without form submission dispatch a
-`dnd-uploads:process-upload-queue` event:
+To asynchronously trigger uploading without form submission call the processUploadQueue function
+exported on the window under ActiveStorageDragAndDrop and pass the form containing the uploads and
+a callback function as arguments:
 ```javascript
 var callback = function(error) {
   if (error) {
@@ -155,10 +156,7 @@ var callback = function(error) {
   }
 }
 
-const uploadEvent = document.createEvent('Event')
-uploadEvent.initEvent('dnd-uploads:process-upload-queue', true, true)
-uploadEvent.detail = { callback }
-form.dispatchEvent(uploadEvent)
+window.ActiveStorageDragAndDrop.processUploadQueue(form, callback)
 ```
 
 ## Development
