@@ -5,10 +5,10 @@ import { placeholderUI } from './default_ui'
 import { dispatchEvent } from './helpers'
 
 let started = false
-let formSubmitted = false
+export let formSubmitted = false // eslint-disable-line prefer-const
 const formControllers = new Map()
 
-function handleProcessUploadQueueEvent (event: Event) {
+export function handleProcessUploadQueueEvent (event: Event) {
   console.warn('WARNING! The processs-upload-queue event is deprecated. Call window.ActiveStorageDragAndDrop.processUploadQueue(form, callback) instead.')
   // $FlowFixMe
   const callback = event.detail.callback
@@ -17,12 +17,10 @@ function handleProcessUploadQueueEvent (event: Event) {
 
 export function processUploadQueue (form: any, callback: (error: Error | null) => void) {
   const formController = findOrInitializeFormController(form)
-  if (formController.uploadControllers.length > 0) {
-    formController.start(error => { callback(error) })
-  } else { callback(null) }
+  formController.start(error => { callback(error) })
 }
 
-function addAttachedFileIcons () {
+export function addAttachedFileIcons () {
   document.querySelectorAll("input[type='hidden'][data-direct-upload-id][data-uploaded-file]").forEach(uploadedFile => {
     const dataset = uploadedFile.dataset
     const detail = {
@@ -35,15 +33,15 @@ function addAttachedFileIcons () {
   })
 }
 
-function preventDragover (event: DragEvent) {
+export function preventDragover (event: DragEvent) {
   const target = event.target
   if (target instanceof Element && target.closest('.asdndzone')) event.preventDefault()
 }
 
-function handleSubmit (event: Event) {
-  if (formSubmitted) { return }
+export function handleSubmit (event: Event) {
+  if (this.formSubmitted) return
 
-  formSubmitted = true
+  this.formSubmitted = true
   const formController = findOrInitializeFormController(event.target)
   if (formController.uploadControllers.length === 0) return
 
@@ -53,25 +51,26 @@ function handleSubmit (event: Event) {
   })
 }
 
-function removeFileFromQueue (event: Event) {
+export function removeFileFromQueue (event: Event) {
   const target = event.target
-  if (!(target instanceof HTMLElement) || target.dataset.dndDelete !== 'true' || !target.dataset.directUploadId) return
+  if (!(target instanceof HTMLElement) || target.dataset.dndDelete !== 'true') return
+  if (!target.dataset.directUploadId) throw new Error('A drag and drop delete element must have a data-direct-upload-id associated with the upload it is intended to remove')
 
   event.preventDefault()
   const formController = findOrInitializeFormController(target.closest('form'))
   formController.unqueueUpload(target.dataset.directUploadId)
 }
 
-function queueUploadsForFileInput (event: Event) {
+export function queueUploadsForFileInput (event: Event) {
   const input = event.target
   if (!(input instanceof HTMLInputElement) || input.type !== 'file' || input.dataset.dnd !== 'true') return
 
   const formController = findOrInitializeFormController(input.form)
   Array.from(input.files).forEach(file => formController.queueUpload(input, file))
-  input.value = ''
+  input.setAttribute('value', '')
 }
 
-function queueUploadsForDroppedFiles (event: DragEvent) {
+export function queueUploadsForDroppedFiles (event: DragEvent) {
   const { target, dataTransfer } = event
   if (!(target instanceof Element && dataTransfer instanceof DataTransfer)) return
 
@@ -101,7 +100,7 @@ export function start () {
   addAttachedFileIcons()
 }
 
-function findOrInitializeFormController (form) {
+export function findOrInitializeFormController (form: any) {
   let formController = formControllers.get(form)
   if (formController) return formController
 
