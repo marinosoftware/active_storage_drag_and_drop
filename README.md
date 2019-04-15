@@ -167,7 +167,8 @@ interactive prompt that will allow you to experiment.
 
 Use `yarn dev` to build JavaScript files automatically on change. Use with
 `gem 'active_storage_drag_and_drop', path: [local-gem-repo]` to develop and debug the gem in place
-in a rails app.
+in a rails app. You can run the JS tests with `yarn test` and you can see the coverage as well as
+the tests by running `yarn cover`.
 
 After making changes to JavaScript run `yarn build` before committing changes to transpile the
 JavaScript for production.
