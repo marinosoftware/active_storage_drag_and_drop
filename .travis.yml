@@ -18,5 +18,8 @@ before_install:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
+before_script:
+  - yarn build
+
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
