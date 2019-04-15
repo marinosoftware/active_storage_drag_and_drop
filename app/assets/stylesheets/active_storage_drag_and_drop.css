@@ -85,3 +85,7 @@ label.asdndzone .direct-upload__filesize {
   color: #707e87;
   padding-left: 7px;
 }
+
+label.asdndzone .direct-upload[data-direct-upload-id='error'] {
+  border: 1px solid red;
+}

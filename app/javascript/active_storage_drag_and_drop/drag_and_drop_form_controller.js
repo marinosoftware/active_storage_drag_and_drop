@@ -37,8 +37,13 @@ export class DragAndDropFormController {
     return dispatchEvent(this.form, `dnd-uploads:${name}`, { detail })
   }
 
-  dispatchError (error: Error) {
-    const event = this.dispatch('error', { error })
+  dispatchError (error: Error, uploadController: DragAndDropUploadController) {
+    const { file, iconContainer } = uploadController
+    const event = dispatchEvent(
+      this.form,
+      'dnd-upload:error',
+      { detail: { error, file, iconContainer } }
+    )
     errorUI(event)
   }
 
