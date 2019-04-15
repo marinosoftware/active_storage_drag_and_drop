@@ -5,6 +5,7 @@ extends:
 plugins:
   - flowtype
 env:
+  mocha: true
   browser: true
 rules:
   curly: [2, multi]

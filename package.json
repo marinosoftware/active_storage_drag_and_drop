@@ -8,6 +8,7 @@
   "license": "MIT",
   "devDependencies": {
     "activestorage": "^5.2.2",
+    "addFileList": "https://bitbucket.org/william_rusnack/addfilelist",
     "babel-core": "^6.25.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^7.1.1",
@@ -21,6 +22,11 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "flow-bin": "^0.92.1",
+    "jsdom": "^13.2.0",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "sinon": "^7.2.3",
     "spark-md5": "^3.0.0",
     "webpack": "^4.12.1",
     "webpack-cli": "^3.2.3",
@@ -31,6 +37,8 @@
   ],
   "scripts": {
     "build": "webpack -p",
-    "dev": "webpack-dev-server"
+    "dev": "webpack -d --watch",
+    "test": "mocha -r babel-register -r jsdom-global/register ./test/mocha/**/*.js",
+    "cover": "nyc -r lcov -r text -r html mocha -r babel-register -r jsdom-global/register test/mocha/**/*.js"
   }
 }

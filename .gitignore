@@ -4,6 +4,7 @@
 /.yardoc
 /_yardoc/
 /coverage/
+/.nyc_output/
 /doc/
 /pkg/
 /spec/reports/
