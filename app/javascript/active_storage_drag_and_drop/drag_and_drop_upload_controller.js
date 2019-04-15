@@ -95,9 +95,8 @@ class ValidationError extends Error {
 function validate (input, file) {
   const sizeLimit = parseInt(input.getAttribute('size_limit'))
   const accept = input.getAttribute('accept')
-  if (accept && !accept.split(', ').includes(file.type)) {
+  if (accept && !accept.split(', ').includes(file.type))
     throw new ValidationError('Invalid filetype')
-  } else if (sizeLimit && file.size > sizeLimit) {
+  else if (sizeLimit && file.size > sizeLimit)
     throw new ValidationError(`File too large. Can be no larger than ${fileSizeSI(sizeLimit)}`)
-  }
 }

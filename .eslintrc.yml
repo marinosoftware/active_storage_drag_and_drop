@@ -6,3 +6,10 @@ plugins:
   - flowtype
 env:
   browser: true
+rules:
+  curly: [2, multi]
+  arrow-body-style: [2, as-needed]
+  arrow-parens: [2, as-needed]
+  prefer-arrow-callback: 2
+  prefer-const: 2
+  no-var: 2

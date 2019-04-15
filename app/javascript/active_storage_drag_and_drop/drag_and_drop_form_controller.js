@@ -16,14 +16,14 @@ export class DragAndDropFormController {
   start (callback: Function) {
     const startUploadControllers = () => {
       const nextUploadController = this.uploadControllers.shift()
-      if (nextUploadController) {
+      if (nextUploadController)
         nextUploadController.start(error => {
           if (error) {
-            this.dispatchError(error)
+            this.dispatchError(error, nextUploadController)
             callback(error)
-          } else { startUploadControllers() }
+          } else startUploadControllers()
         })
-      } else {
+      else {
         callback()
         const event = this.dispatch('end')
         endUI(event)
@@ -66,7 +66,7 @@ export class DragAndDropFormController {
   }
 
   unqueueUpload (id: string | number) {
-    const index = this.uploadControllers.findIndex(uploader => { return uploader.upload.id === id })
+    const index = this.uploadControllers.findIndex(uploader => (uploader.upload.id === id))
     this.uploadControllers.splice(index, 1)
     // TODO: add an event to allow custom UI here
     document.querySelectorAll(`[data-direct-upload-id="${id}"]`).forEach(element => {

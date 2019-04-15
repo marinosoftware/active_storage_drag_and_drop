@@ -87,7 +87,7 @@ export function queueUploadsForDroppedFiles (event: DragEvent) {
 }
 
 export function start () {
-  if (started) { return }
+  if (started) return
 
   started = true
   document.addEventListener('change', queueUploadsForFileInput)
