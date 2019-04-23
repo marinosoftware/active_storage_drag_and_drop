@@ -62,7 +62,6 @@ export function cancelUI (event: CustomEvent) {
 }
 
 export function paintUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
-  // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
   const uploadStatus = (complete ? 'complete' : 'pending')
   const progress = (complete ? 100 : 0)
   iconContainer.insertAdjacentHTML('beforeend', `

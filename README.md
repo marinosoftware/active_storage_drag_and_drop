@@ -19,6 +19,9 @@ Rails' [ActiveStorage](https://github.com/rails/rails/tree/master/activestorage)
     - [Options]('#options')
     - [Validation](#validation)
     - [JavaScript Events](#javascript-events)
+    - [Globally Exported JavaScript](#globally-exported-javascript)
+      - [Upload Asynchronously](#upload-acsynchronously)
+      - [Custom Upload Icons](#custom-upload-icons)
   - [Development](#development)
   - [Contributing](#contributing)
   - [License](#license)
@@ -129,7 +132,8 @@ for the event and call `preventDefault()` on the event.
 | `dnd-upload:start` | `<input>` | `{ id, file, iconContainer }` | An upload is starting. |
 | `dnd-upload:before-blob-request` | `<input>` | `{ id, file, iconContainer, xhr }` | Before making a request to your application for upload metadata. |
 | `dnd-upload:before-storage-request` | `<input>` | `{ id, file, iconContainer, xhr }` | Before making a request to store a file. |
-| `dnd-upload:progress` | `<input>` | `{ id, file, iconContainer, progress }` | As requests to store files progress. |
+| `dnd-upload:progress` | `<input>` | `{ id, file, iconContainer, progress }` | Called as requests to store files progress. Default UI sets the width of the `direct-upload__progress` element. |
+| `dnd-upload:cancel` | `<input>` | `{ id, file, iconContainer }` | A user triggered the cancelation of an upload, the upload is removed from the queue and the preventable default UI removes matching upload icons from the iconContainer. |
 | `dnd-upload:error` | `<input>` | `{ id, file, iconContainer, error }` | An error occurred pertaining to a specific file. The default can be prevented to supply your own UI for errors. |
 | `dnd-upload:end` | `<input>` | `{ id, file, iconContainer }` | An upload has ended. Default can be prevented to supply your own UI for the end of an upload. |
 | `dnd-uploads:error` | `<form>` | `{ error }` | An error occurred unrelated to a specific file. The default can be prevented to supply your own UI for errors. |
@@ -144,6 +148,8 @@ document.addEventListener('dnd-upload:error', function (event) {
 })
 ```
 
+### Globally Exported JavaScript
+#### Upload Asynchronously
 To asynchronously trigger uploading without form submission call the processUploadQueue function
 exported on the window under ActiveStorageDragAndDrop and pass the form containing the uploads and
 a callback function as arguments:
@@ -158,6 +164,40 @@ var callback = function(error) {
 
 window.ActiveStorageDragAndDrop.processUploadQueue(form, callback)
 ```
+#### Custom Upload Icons
+To customise how the upload icons for each file are added to the DOM you can redefine
+`window.ActiveStroageDragAndDrop.paintUploadIcon(iconContainer, id, file, complete)` where the
+arguments it receives are:
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `iconContainer` | `HTMLElement` | The element to insert the upload icon markup into. |
+| `id` | `string` | A unique identifier which will be used for any future UI events on this upload. |
+| `file` | `File` | The object representing the file and its metadata. |
+| `complete` | `boolean` | Is true if the upload is finished and false otherwise. |
+This is the default implementation:
+```javascript
+export function paintUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
+  const uploadStatus = (complete ? 'complete' : 'pending')
+  const progress = (complete ? 100 : 0)
+  iconContainer.insertAdjacentHTML('beforeend', `
+  <div data-direct-upload-id="${id}">
+    <div class="direct-upload direct-upload--${uploadStatus}">
+      <div class="direct-upload__progress" style="width: ${progress}%"></div>
+      <span class="direct-upload__filename">${file.name}</span>
+      <span class="direct-upload__filesize">${fileSizeSI(file.size)}</span>
+    </div>
+    <a href='remove' class='direct-upload__remove'>X</a>
+  </div>
+  `)
+}
+```
+All of the built in UI that manipulates these icons can be overriden by attaching to their event
+and preventing the default behaviour. But to take advantage of the built in ui events though you should
+follow these rules:
+- The root level element must have a `data-direct-upload-id` attribute set to the id passed to `paintUploadIcon`.
+- The progress section consists of a parent with the class `direct-upload` and a direct child with
+  the class `direct-upload__progress`.
+- The element that will cancel the upload when clicked has the class `direct-upload__remove`.
 
 ## Development
 
