@@ -50,5 +50,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'sqlite3'
   spec.add_dependency 'rack', '~> 2.0.6'
-  spec.add_dependency 'rails', '~> 5.2'
+  spec.add_dependency 'rails', '~> 5.2.2.1'
 end
