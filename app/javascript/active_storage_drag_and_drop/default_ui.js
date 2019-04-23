@@ -52,6 +52,15 @@ export function placeholderUI (event: CustomEvent) {
   window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, true)
 }
 
+export function cancelUI (event: CustomEvent) {
+  if (event.defaultPrevented) return
+
+  const { id } = event.detail
+  document.querySelectorAll(`[data-direct-upload-id="${id}"]`).forEach(element => {
+    element.remove()
+  })
+}
+
 export function paintUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
   // the only rule here is that all root level elements must have the data: { direct_upload_id: [id] } attribute ala: 'data-direct-upload-id="${id}"'
   const uploadStatus = (complete ? 'complete' : 'pending')

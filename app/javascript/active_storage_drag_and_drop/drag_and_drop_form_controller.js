@@ -1,7 +1,7 @@
 // @flow
 
 import { dispatchEvent } from './helpers'
-import { endUI, errorUI } from './default_ui'
+import { endUI, errorUI, cancelUI } from './default_ui'
 import { DragAndDropUploadController } from './drag_and_drop_upload_controller'
 
 export class DragAndDropFormController {
@@ -70,13 +70,14 @@ export class DragAndDropFormController {
     this.uploadControllers.splice(0, this.uploadControllers.length)
   }
 
-  unqueueUpload (id: string | number) {
+  unqueueUpload (id: number) {
     const index = this.uploadControllers.findIndex(uploader => (uploader.upload.id === id))
+    const uploadController = this.uploadControllers[index]
     this.uploadControllers.splice(index, 1)
-    // TODO: add an event to allow custom UI here
-    document.querySelectorAll(`[data-direct-upload-id="${id}"]`).forEach(element => {
-      element.remove()
-    })
+    const event = uploadController && (uploadController.dispatch instanceof Function)
+      ? uploadController.dispatch('cancel')
+      : this.dispatch('cancel', { id: 'error' })
+    cancelUI(event)
   }
 }
 

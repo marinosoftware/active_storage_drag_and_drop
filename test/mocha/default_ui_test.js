@@ -16,6 +16,36 @@ describe('default_ui', () => {
 
   afterEach(() => { sinon.restore() })
 
+  describe('#cancelUI', () => {
+    let event
+
+    beforeEach(() => {
+      const detail = { id: 1 }
+      event = new CustomEvent('error', { detail })
+    })
+
+    context('when the default event is not prevented', () => {
+      beforeEach(() => {
+        defaultUI.cancelUI(event)
+      })
+
+      it('removes every element with the matching direct upload id in its dataset', () => {
+        assert.strictEqual(0, document.querySelectorAll('[data-direct-upload-id="1"]').length)
+      })
+    })
+
+    context('when the default event is prevented', () => {
+      beforeEach(() => {
+        sinon.stub(event, 'defaultPrevented').value(true)
+        defaultUI.cancelUI(event)
+      })
+
+      it('does not remove any element with the matching direct upload id in its dataset', () => {
+        assert.strictEqual(1, document.querySelectorAll('[data-direct-upload-id="1"]').length)
+      })
+    })
+  })
+
   describe('#errorUI', () => {
     let event
 
@@ -23,8 +53,6 @@ describe('default_ui', () => {
       const detail = { id: 1, error: 'dummy error message' }
       event = new CustomEvent('error', { detail })
     })
-
-    afterEach(() => { document.body.innerHTML = '' })
 
     context('when the default event is not prevented', () => {
       beforeEach(() => {
@@ -42,7 +70,7 @@ describe('default_ui', () => {
 
     context('when the default event is prevented', () => {
       beforeEach(() => {
-        sinon.createSandbox().stub(event, 'defaultPrevented').value(true)
+        sinon.stub(event, 'defaultPrevented').value(true)
         defaultUI.errorUI(event)
       })
 
@@ -65,10 +93,6 @@ describe('default_ui', () => {
       event = new CustomEvent('end', { detail: { id: 1 } })
     })
 
-    afterEach(() => {
-      document.body.innerHTML = ''
-    })
-
     context('when the default event is not prevented', () => {
       beforeEach(() => {
         defaultUI.endUI(event)
@@ -85,7 +109,7 @@ describe('default_ui', () => {
 
     context('when the default event is prevented', () => {
       beforeEach(() => {
-        sinon.createSandbox().stub(event, 'defaultPrevented').value(true)
+        sinon.stub(event, 'defaultPrevented').value(true)
         defaultUI.endUI(event)
       })
 
