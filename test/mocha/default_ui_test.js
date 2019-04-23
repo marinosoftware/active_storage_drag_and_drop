@@ -3,16 +3,23 @@ import assert from 'assert'
 import sinon from 'sinon'
 
 describe('default_ui', () => {
+  let directUpload
+
+  beforeEach(() => {
+    document.body.insertAdjacentHTML('beforeend', `
+      <div data-direct-upload-id="1">
+        <div class="direct-upload"></div>
+      </div>
+    `)
+    directUpload = document.body.querySelector('.direct-upload')
+  })
+
   afterEach(() => { sinon.restore() })
 
   describe('#errorUI', () => {
     let event
-    let directUpload
 
     beforeEach(() => {
-      directUpload = document.createElement('DIV')
-      directUpload.setAttribute('id', 'direct-upload-1')
-      document.body.append(directUpload)
       const detail = { id: 1, error: 'dummy error message' }
       event = new CustomEvent('error', { detail })
     })
@@ -51,13 +58,10 @@ describe('default_ui', () => {
 
   describe('#endUI', () => {
     let event
-    let directUpload
 
     beforeEach(() => {
-      directUpload = document.createElement('DIV')
       directUpload.setAttribute('id', 'direct-upload-1')
-      directUpload.setAttribute('class', 'direct-upload--pending')
-      document.body.append(directUpload)
+      directUpload.classList.add('direct-upload--pending')
       event = new CustomEvent('end', { detail: { id: 1 } })
     })
 

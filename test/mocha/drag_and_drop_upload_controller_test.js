@@ -226,10 +226,11 @@ describe('DragAndDropUploadController', () => {
     })
 
     beforeEach(() => {
-      const progressBar = document.createElement('DIV')
-      progressBar.setAttribute('id', `direct-upload-progress-${controller.upload.id}`)
-      progressBar.setAttribute('style', 'width: 0%')
-      document.body.append(progressBar)
+      document.body.insertAdjacentHTML('beforeend', `
+        <div data-direct-upload-id="1">
+          <div class="direct-upload__progress"> style="width: 0%"</div>
+        </div>
+      `)
     })
 
     it('dipatches a progress event', () => {
@@ -246,7 +247,7 @@ describe('DragAndDropUploadController', () => {
 
     it('sets the width of the target progress div', () => {
       controller.uploadRequestDidProgress(uploadEvent)
-      const progressBar = document.getElementById(`direct-upload-progress-${controller.upload.id}`)
+      const progressBar = document.body.querySelector(`[data-direct-upload-id="${controller.upload.id}"] .direct-upload__progress`)
       assert.strictEqual(progressBar.style.width, '50%')
     })
   })

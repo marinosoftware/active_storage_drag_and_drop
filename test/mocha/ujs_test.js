@@ -117,7 +117,7 @@ describe('ujs', () => {
       form = document.createElement('FORM')
       target = document.createElement('INPUT')
       target.dataset.directUploadId = 1
-      target.dataset.dndDelete = 'true'
+      target.classList.add('direct-upload__remove')
       form.append(target)
       // formController = { unqueueUpload: sinon.spy() }
       // sinon.stub(ujs, 'findOrInitializeFormController').returns(formController)
@@ -125,7 +125,7 @@ describe('ujs', () => {
 
     afterEach(() => { sinon.restore() })
 
-    it('prevents the default form submission', () => {
+    it('prevents the default click event', () => {
       const event = { target, preventDefault: sinon.spy() }
       ujs.removeFileFromQueue(event)
       sinon.assert.calledOnce(event.preventDefault)
@@ -133,7 +133,7 @@ describe('ujs', () => {
 
     context('when the target element has no data-dnd-delete attribute', () => {
       beforeEach(() => {
-        target.dataset.dndDelete = 'false'
+        target.classList.remove('direct-upload__remove')
       })
 
       it('does not prevent the default form submission', () => {

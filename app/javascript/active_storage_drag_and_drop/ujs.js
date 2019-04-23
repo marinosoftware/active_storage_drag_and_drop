@@ -53,12 +53,14 @@ export function handleSubmit (event: Event) {
 
 export function removeFileFromQueue (event: Event) {
   const target = event.target
-  if (!(target instanceof HTMLElement) || target.dataset.dndDelete !== 'true') return
-  if (!target.dataset.directUploadId) throw new Error('A drag and drop delete element must have a data-direct-upload-id associated with the upload it is intended to remove')
+  if (!(target instanceof HTMLElement && target.classList.contains('direct-upload__remove'))) return
+
+  const wrapper = target.closest('[data-direct-upload-id]')
+  if (!(wrapper instanceof HTMLElement)) throw new Error('Cannot remove queued upload because there is no enclosing element with a data-direct-upload-id attribute.')
 
   event.preventDefault()
   const formController = findOrInitializeFormController(target.closest('form'))
-  formController.unqueueUpload(target.dataset.directUploadId)
+  formController.unqueueUpload(parseInt(wrapper.dataset.directUploadId))
 }
 
 export function queueUploadsForFileInput (event: Event) {
