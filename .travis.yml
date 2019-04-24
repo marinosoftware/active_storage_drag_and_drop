@@ -13,12 +13,14 @@ env:
     CC_TEST_REPORTER_ID=93b20ad2a94eb5d9feb97dca94b2d1df4243fa3d715d5d6c1c61bc9c6199f105
 
 before_install:
+  - nvm install node
   - gem install bundler -v 1.16.1
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
 before_script:
+  - yarn install --prod
   - yarn build
 
 after_script:

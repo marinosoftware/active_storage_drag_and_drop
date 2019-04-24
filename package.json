@@ -7,13 +7,8 @@
   "author": "Dave O'Keeffe",
   "license": "MIT",
   "devDependencies": {
-    "activestorage": "^5.2.2",
     "addFileList": "https://bitbucket.org/william_rusnack/addfilelist",
-    "babel-core": "^6.25.0",
     "babel-eslint": "^10.0.1",
-    "babel-loader": "^7.1.1",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-flow": "^6.23.0",
     "eslint": "^5.12.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-flowtype": "^3.2.1",
@@ -28,9 +23,16 @@
     "nyc": "^13.3.0",
     "sinon": "^7.2.3",
     "spark-md5": "^3.0.0",
-    "webpack": "^4.12.1",
-    "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.1.14"
+  },
+  "dependencies": {
+    "activestorage": "^5.2.2-1",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1"
   },
   "files": [
     "app/assets/javascripts/active_storage_drag_and_drop.js"
