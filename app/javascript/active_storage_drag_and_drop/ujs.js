@@ -69,7 +69,7 @@ export function queueUploadsForFileInput (event: Event) {
 
   const formController = findOrInitializeFormController(input.form)
   Array.from(input.files).forEach(file => formController.queueUpload(input, file))
-  input.setAttribute('value', '')
+  input.value = ''
 }
 
 export function queueUploadsForDroppedFiles (event: DragEvent) {

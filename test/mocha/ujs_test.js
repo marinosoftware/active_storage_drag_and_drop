@@ -163,10 +163,9 @@ describe('ujs', () => {
     afterEach(() => { sinon.restore() })
 
     it('empties the value of the input', () => {
-      target.setAttribute('value', 'foobar')
       const event = { target }
       ujs.queueUploadsForFileInput(event)
-      assert.strictEqual(target.getAttribute('value'), '')
+      assert.strictEqual(target.value, '')
     })
   })
 
