@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_development_dependency 'bootsnap'
-  spec.add_development_dependency 'bundler', '~> 1.16'
+  spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'capybara'
   spec.add_development_dependency 'geckodriver-helper'
   spec.add_development_dependency 'github-markup'
@@ -49,5 +49,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'sqlite3'
   spec.add_dependency 'rack', '~> 2.0.6'
-  spec.add_dependency 'rails', '~> 5.2.2.1'
+  spec.add_dependency 'rails', '~> 5.2.3'
 end
