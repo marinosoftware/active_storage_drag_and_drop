@@ -3,8 +3,13 @@
   "version": "0.3.4",
   "description": "Attach cloud and local files in Rails applications",
   "main": "app/assets/javascripts/active_storage_drag_and_drop.js",
+  "files": ["app/assets/javascripts/active_storage_drag_and_drop.js"],
   "repository": "git+https://github.com/marinosoftware/active_storage_drag_and_drop.git",
   "author": "Dave O'Keeffe",
+  "contributors": [
+    { "name": "Dave O'Keeffe" },
+    { "name": "Ian Grant" }
+  ],
   "license": "MIT",
   "devDependencies": {
     "addFileList": "https://bitbucket.org/william_rusnack/addfilelist",
