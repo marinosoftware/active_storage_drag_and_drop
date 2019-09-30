@@ -121,7 +121,7 @@ module ActiveStorageDragAndDrop
       {
         multiple: @object.send(method).is_a?(ActiveStorage::Attached::Many),
         direct_upload: true,
-        style: 'display:none;',
+        style: 'opacity: 0;',
         data: {
           dnd: true,
           dnd_zone_id: "asdndz-#{object_name}_#{method}",

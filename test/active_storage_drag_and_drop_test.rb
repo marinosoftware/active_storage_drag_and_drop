@@ -84,7 +84,7 @@ class ActiveStorageDragAndDropTest < Minitest::Test
   end
 
   def test_file_input_is_hidden
-    assert_equal 'display:none;', default_highlights_field.at_css('input[type="file"]')['style']
+    assert_equal 'opacity: 0;', default_highlights_field.at_css('input[type="file"]')['style']
   end
 
   def test_highlights_file_input_is_multiple

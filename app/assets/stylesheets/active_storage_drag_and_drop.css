@@ -17,6 +17,11 @@ label.asdndzone {
   letter-spacing: 0.6px;
 }
 
+label.asdndzone:focus-within {
+  outline: 2px solid #7aacfe; /* for non-webkit browsers */
+  outline: 5px auto -webkit-focus-ring-color;
+}
+
 label.asdndzone .asdndz-highlight {
   color: #8dc63f;
 }
