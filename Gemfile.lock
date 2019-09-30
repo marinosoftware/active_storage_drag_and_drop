@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_storage_drag_and_drop (1.0.2.1)
+    active_storage_drag_and_drop (1.0.3)
       rack (~> 2.0.6)
       rails (>= 5.2.2.1)
 
@@ -139,7 +139,7 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.0.4)
+    rails-html-sanitizer (1.2.0)
       loofah (~> 2.2, >= 2.2.2)
     railties (5.2.3)
       actionpack (= 5.2.3)
