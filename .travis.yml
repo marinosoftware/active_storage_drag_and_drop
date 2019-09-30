@@ -20,7 +20,7 @@ before_install:
   - ./cc-test-reporter before-build
 
 before_script:
-  - yarn install --prod
+  - yarn install
   - yarn build
 
 after_script:

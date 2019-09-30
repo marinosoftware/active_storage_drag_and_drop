@@ -33,12 +33,12 @@
     "nyc": "^13.3.0",
     "sinon": "^7.2.3",
     "spark-md5": "^3.0.0",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1",
     "webpack-dev-server": "^3.1.14"
   },
   "dependencies": {
-    "activestorage": ">=5.2.2-1"
+    "activestorage": ">=5.2.2-1",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1"
   },
   "files": [
     "app/assets/javascripts/active_storage_drag_and_drop.js"
