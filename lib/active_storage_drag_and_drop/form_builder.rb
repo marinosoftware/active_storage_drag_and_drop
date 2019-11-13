@@ -62,16 +62,31 @@ module ActiveStorageDragAndDrop
     # @option (see #drag_and_drop_file_field)
     # @return (see #drag_and_drop_file_field)
     def drag_and_drop_file_field_string(method, content = nil, param_options = {})
-      ref     = "#{object_name}_#{method}"
       options = file_field_options(method, param_options)
+
+      content_tag :label,
+                  safe_join(label_content(method, content, options)),
+                  class: 'asdndzone', id: options[:data][:dnd_zone_id],
+                  'data-dnd-input-id': options[:id]
+    end
+
+    # Compose the content for the label
+    #
+    # @author Ian Grant
+    # @see #drag_and_drop_file_field_string
+    #
+    # @param [Symbol] method The attribute on the target model to attach the files to.
+    # @param [String] content Provided content for the label.
+    # @param [Hash] options A hash of options to customise the file field.
+    # @return [String] HTML content for the label
+    def label_content(method, content, options)
       content ||= default_content
       content = [content]
 
-      content << tag.div(id: "asdndz-#{ref}__icon-container", class: 'asdndz__icon-container')
+      content << tag.div(id: options[:data][:icon_container_id], class: 'asdndz__icon-container')
       content << file_field(method, options)
-      content += unpersisted_attachment_fields(method, options[:multiple])
-      content_tag :label, safe_join(content), class: 'asdndzone', id: "asdndz-#{ref}",
-                                              'data-dnd-input-id': ref
+      content += unpersisted_attachment_fields(method, options)
+      content
     end
 
     # returns an array of tags used to pre-populate the the dropzone with tags queueing unpersisted
@@ -79,17 +94,17 @@ module ActiveStorageDragAndDrop
     #
     # @author Ian Grant
     # @param [Symbol] method The attribute on the target model to attach the files to.
-    # @param [Boolean] multiple Whether the dropzone should accept multiple attachments or not.
+    # @param [Hash] options A hash of options to customise the file field.
     # @return [Array] An array of hidden field tags for each unpersisted file attachment.
-    def unpersisted_attachment_fields(method, multiple)
+    def unpersisted_attachment_fields(method, options)
       unpersisted_attachments(method).map.with_index do |attachment, idx|
         hidden_field method,
-                     mutiple: multiple ? :multiple : false, value: attachment.signed_id,
-                     name: "#{object_name}[#{method}]#{'[]' if multiple}",
+                     mutiple: options[:multiple] ? :multiple : false,
+                     value: attachment.signed_id, name: options[:name],
                      data: {
                        direct_upload_id: idx,
                        uploaded_file: { name: attachment.filename, size: attachment.byte_size },
-                       icon_container_id: "asdndz-#{object_name}_#{method}__icon-container"
+                       icon_container_id: options[:data][:icon_container_id]
                      }
       end
     end
@@ -116,16 +131,17 @@ module ActiveStorageDragAndDrop
     #
     # @author Ian Grant
     # @param [Symbol] method The attribute on the target model to attach the files to.
-    # @return [Hash] The default options  for the file field
-    def default_file_field_options(method)
+    # @param [Symbol] input_id The id of the input field.
+    # @return [Hash] The default options for the file field
+    def default_file_field_options(method, input_id)
       {
         multiple: @object.send(method).is_a?(ActiveStorage::Attached::Many),
         direct_upload: true,
         style: 'opacity: 0;',
         data: {
           dnd: true,
-          dnd_zone_id: "asdndz-#{object_name}_#{method}",
-          icon_container_id: "asdndz-#{object_name}_#{method}__icon-container"
+          dnd_zone_id: "asdndz-#{input_id}",
+          icon_container_id: "asdndz-#{input_id}__icon-container"
         }
       }
     end
@@ -148,9 +164,10 @@ module ActiveStorageDragAndDrop
     # @param [Hash] custom_options The user provided custom options hash.
     # @return [Hash] The user provided options and default options merged.
     def file_field_options(method, custom_options)
-      default_file_field_options(method).merge(custom_options) do |_key, default, custom|
-        default.is_a?(Hash) && custom.is_a?(Hash) ? default.merge(custom) : custom
-      end
+      custom_options[:name] ||= "#{object_name}[#{method}]#{'[]' if custom_options[:multiple]}"
+      custom_options[:id] ||= custom_options[:name].gsub(/[\W_]+/, '_').chomp('_')
+
+      default_file_field_options(method, custom_options[:id]).deep_merge(custom_options)
     end
   end
 end
