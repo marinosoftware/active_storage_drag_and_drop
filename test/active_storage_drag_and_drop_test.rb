@@ -11,7 +11,7 @@ end
 
 class ActiveStorageDragAndDropTest < Minitest::Test
   def template
-    return @template if @template
+    return @template if defined? @template
 
     @template = Object.new
     @template.extend ActionView::Helpers::TagHelper
@@ -28,14 +28,14 @@ class ActiveStorageDragAndDropTest < Minitest::Test
   end
 
   def default_avatar_field
-    return @default_avatar_field if @default_avatar_field
+    return @default_avatar_field if defined? @default_avatar_field
 
     dnd_avatar_field = user_form.drag_and_drop_file_field(:avatar)
     @default_avatar_field = parse_html(dnd_avatar_field)
   end
 
   def default_highlights_field
-    return @default_highlights_field if @default_highlights_field
+    return @default_highlights_field if defined? @default_highlights_field
 
     dnd_highlights_field = user_form.drag_and_drop_file_field(:highlights)
     @default_highlights_field = parse_html(dnd_highlights_field)
