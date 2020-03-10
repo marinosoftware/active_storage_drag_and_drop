@@ -1,4 +1,5 @@
 import * as defaultUI from '../../app/javascript/active_storage_drag_and_drop/default_ui.js'
+import * as ujs from '../../app/javascript/active_storage_drag_and_drop/ujs.js'
 import assert from 'assert'
 import sinon from 'sinon'
 
@@ -130,7 +131,7 @@ describe('default_ui', () => {
       const detail = {
         id: '1',
         file: 'test-file',
-        iconContainer: 'icon-container'
+        iconContainer: document.createElement('DIV')
       }
       event = { detail }
     })
@@ -138,10 +139,10 @@ describe('default_ui', () => {
     context('when the default event is not prevented', () => {
       beforeEach(() => { event.defaultPrevented = false })
 
-      it('calls paintUploadIcon with the event detail and complete set to false', () => {
-        sinon.stub(window.ActiveStorageDragAndDrop, 'paintUploadIcon')
+      it('calls paintDefaultUploadIcon with the event detail and complete set to false', () => {
+        sinon.stub(ujs, 'paintUploadIcon')
         defaultUI.placeholderUI(event)
-        sinon.assert.called(window.ActiveStorageDragAndDrop.paintUploadIcon)
+        sinon.assert.called(ujs.paintUploadIcon)
       })
     })
 
@@ -150,7 +151,7 @@ describe('default_ui', () => {
     })
   })
 
-  describe('#paintUploadIcon', () => {
+  describe('#paintDefaultUploadIcon', () => {
     let iconContainer
     let file
 
@@ -158,7 +159,7 @@ describe('default_ui', () => {
       iconContainer = document.createElement('DIV')
       document.body.append(iconContainer)
       file = new File([''], 'test_file.txt')
-      defaultUI.paintUploadIcon(iconContainer, 1, file, true)
+      defaultUI.paintDefaultUploadIcon(iconContainer, 1, file, true)
     })
 
     it('adds a root div with a direct-upload-id to the icon container', () => {

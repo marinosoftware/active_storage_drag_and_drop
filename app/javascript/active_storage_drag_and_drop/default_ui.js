@@ -1,6 +1,23 @@
 // @flow
 
 import { fileSizeSI } from './helpers'
+import { paintUploadIcon } from './ujs'
+
+const windowDeprecationWarning = `
+WARNING! Setting Active Storage drag and drop icon painter globally is deprecated. Pass icon \
+painter as an option to the start function instead e.g:
+  ActiveStorageDragAndDrop.start({
+    iconPainter: paintUploadIcon
+  });
+`
+
+function backwardsCompatiblePaintUploadIcon (iconContainer, id, file, complete) {
+  if (window.ActiveStorageDragAndDrop && window.ActiveStorageDragAndDrop.paintUploadIcon) {
+    console.warn(windowDeprecationWarning)
+    window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, complete)
+  } else
+    paintUploadIcon(iconContainer, id, file, complete)
+}
 
 export function errorUI (event: CustomEvent) {
   let { id } = event.detail
@@ -9,7 +26,7 @@ export function errorUI (event: CustomEvent) {
 
   if (!id) {
     id = 'error'
-    window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, false)
+    backwardsCompatiblePaintUploadIcon(iconContainer, id, file, false)
   }
   const element = document.querySelector(`[data-direct-upload-id="${id}"] .direct-upload`)
   if (!element) return
@@ -34,7 +51,7 @@ export function initializeUI (event: CustomEvent) {
   if (event.defaultPrevented) return
 
   const { id, file, iconContainer } = event.detail
-  window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, false)
+  backwardsCompatiblePaintUploadIcon(iconContainer, id, file, false)
 }
 
 export function progressUI (event: CustomEvent) {
@@ -49,7 +66,7 @@ export function placeholderUI (event: CustomEvent) {
   if (event.defaultPrevented) return
 
   const { id, file, iconContainer } = event.detail
-  window.ActiveStorageDragAndDrop.paintUploadIcon(iconContainer, id, file, true)
+  backwardsCompatiblePaintUploadIcon(iconContainer, id, file, true)
 }
 
 export function cancelUI (event: CustomEvent) {
@@ -61,7 +78,7 @@ export function cancelUI (event: CustomEvent) {
   })
 }
 
-export function paintUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
+export function paintDefaultUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
   const uploadStatus = (complete ? 'complete' : 'pending')
   const progress = (complete ? 100 : 0)
   iconContainer.insertAdjacentHTML('beforeend', `

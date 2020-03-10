@@ -19,9 +19,8 @@ Rails' [ActiveStorage](https://github.com/rails/rails/tree/master/activestorage)
     - [Options]('#options')
     - [Validation](#validation)
     - [JavaScript Events](#javascript-events)
-    - [Globally Exported JavaScript](#globally-exported-javascript)
-      - [Upload Asynchronously](#upload-acsynchronously)
-      - [Custom Upload Icons](#custom-upload-icons)
+    - [Upload Asynchronously](#upload-acsynchronously)
+    - [Custom Upload Icons](#custom-upload-icons)
   - [Development](#development)
   - [Contributing](#contributing)
   - [License](#license)
@@ -42,16 +41,30 @@ Or install it yourself as:
 
     $ gem install active_storage_drag_and_drop
 
-Include `active_stroage_drag_and_drop.js` in your application's JavaScript bundle.
-```js
-//= require active_storage_drag_and_drop
-```
-
-And include the styles in your application css:
+Include the styles in your application css:
 ```css
 /*
  *= require active_storage_drag_and_drop
  */
+```
+
+### Asset Pipeline - Rails < 6
+Include `active_stroage_drag_and_drop.js` in your application's JavaScript bundle.
+```javascript
+//= require active_storage_drag_and_drop
+```
+
+### Webpacker - Rails >= 6
+
+Use yarn to add the js package as a dependency:
+
+    $ yarn add active_storage_drag_and_drop
+
+Import the start function from the bundle and run it:
+```javascript
+import ActiveStorageDragAndDrop from 'active_storage_drag_and_drop'
+
+ActiveStorageDragAndDrop.start()
 ```
 
 ## Usage
@@ -148,12 +161,12 @@ document.addEventListener('dnd-upload:error', function (event) {
 })
 ```
 
-### Globally Exported JavaScript
-#### Upload Asynchronously
-To asynchronously trigger uploading without form submission call the processUploadQueue function
-exported on the window under ActiveStorageDragAndDrop and pass the form containing the uploads and
-a callback function as arguments:
+### Upload Asynchronously
+To asynchronously trigger uploading without form submission, import the processUploadQueue function
+and pass the form containing the uploads and a callback function as arguments:
 ```javascript
+import { processUploadQueue } from 'active_storage_drag_and_drop'
+
 var callback = function(error) {
   if (error) {
     // …handle error…
@@ -162,12 +175,30 @@ var callback = function(error) {
   }
 }
 
-window.ActiveStorageDragAndDrop.processUploadQueue(form, callback)
+processUploadQueue(form, callback)
 ```
-#### Custom Upload Icons
-To customise how the upload icons for each file are added to the DOM you can redefine
-`window.ActiveStroageDragAndDrop.paintUploadIcon(iconContainer, id, file, complete)` where the
-arguments it receives are:
+### Custom Upload Icons
+
+To customise how the upload icons for each file are added to the DOM you pass an `iconPainter`
+option to the start function e.g:
+
+```javascript
+import { start } from 'active_storage_drag_and_drop'
+
+start({
+  iconPainter (iconContainer, id, file, complete) {
+    iconContainer.insertAdjacentHTML('beforeend', `
+    <li data-direct-upload-id="${id}" class="direct-upload">
+      <div class="direct-upload__progress" style="width: ${progress}"></div>
+      ${file.name}
+      <button class="direct-upload__remove">X</button>
+    </li>
+    `)
+  }
+})
+```
+
+The arguments that `iconPainter` receives are:
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `iconContainer` | `HTMLElement` | The element to insert the upload icon markup into. |
@@ -176,7 +207,7 @@ arguments it receives are:
 | `complete` | `boolean` | Is true if the upload is finished and false otherwise. |
 This is the default implementation:
 ```javascript
-export function paintUploadIcon (iconContainer: HTMLElement, id: string | number, file: File, complete: boolean) {
+export function paintDefaultUploadIcon (iconContainer, id, file, complete) {
   const uploadStatus = (complete ? 'complete' : 'pending')
   const progress = (complete ? 100 : 0)
   iconContainer.insertAdjacentHTML('beforeend', `

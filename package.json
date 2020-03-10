@@ -1,14 +1,17 @@
 {
   "name": "active_storage_drag_and_drop",
-  "version": "0.3.4",
+  "version": "0.4.1",
   "description": "Attach cloud and local files in Rails applications",
   "main": "app/assets/javascripts/active_storage_drag_and_drop.js",
-  "files": ["app/assets/javascripts/active_storage_drag_and_drop.js"],
+  "files": [
+    "app/assets/javascripts/active_storage_drag_and_drop.js"
+  ],
   "repository": "git+https://github.com/marinosoftware/active_storage_drag_and_drop.git",
-  "author": "Dave O'Keeffe",
+  "author": "Ian Grant",
   "contributors": [
-    { "name": "Dave O'Keeffe" },
-    { "name": "Ian Grant" }
+    {
+      "name": "Ian Grant"
+    }
   ],
   "license": "MIT",
   "devDependencies": {
@@ -37,12 +40,9 @@
   },
   "dependencies": {
     "activestorage": ">=5.2.2-1",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1"
+    "webpack": ">=4.30.0",
+    "webpack-cli": ">=3.3.1"
   },
-  "files": [
-    "app/assets/javascripts/active_storage_drag_and_drop.js"
-  ],
   "scripts": {
     "build": "webpack -p",
     "dev": "webpack -d --watch",

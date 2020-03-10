@@ -1,10 +1,11 @@
 // @flow
 
 import { DragAndDropFormController } from './drag_and_drop_form_controller'
-import { placeholderUI } from './default_ui'
+import { placeholderUI, paintDefaultUploadIcon } from './default_ui'
 import { dispatchEvent } from './helpers'
 
 let started = false
+export let paintUploadIcon = paintDefaultUploadIcon
 export let formSubmitted = false // eslint-disable-line prefer-const
 const formControllers = new Map()
 
@@ -88,7 +89,9 @@ export function queueUploadsForDroppedFiles (event: DragEvent) {
   Array.from(dataTransfer.files).forEach(file => formController.queueUpload(input, file))
 }
 
-export function start () {
+export function start (options: { iconPainter?: Function }) {
+  if (options && options.iconPainter) paintUploadIcon = options.iconPainter
+
   if (started) return
 
   started = true
