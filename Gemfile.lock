@@ -164,7 +164,7 @@ GEM
     rb-fsevent (0.10.3)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    redcarpet (3.5.0)
+    redcarpet (3.5.1)
     regexp_parser (1.7.0)
     rexml (3.2.4)
     rubocop (0.80.1)
